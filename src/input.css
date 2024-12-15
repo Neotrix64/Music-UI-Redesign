@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 171717 */
+/* 000 */
+
 body{
-    background-color: #181818;
+    background-color: #000;
 }
