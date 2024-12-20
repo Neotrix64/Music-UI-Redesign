@@ -12,6 +12,10 @@ function NavBar() {
   
   const { setSection } = useSection();
 
+  const handleSection = () =>{
+    setSection("myProfile");
+  }
+
   return (
     <nav className="flex justify-between text-white p-4 bg-[#000] rounded-b-xl  ">
       <div className="logo flex gap-2 text-xl items-center">
@@ -25,8 +29,8 @@ function NavBar() {
       </div>
       <div className="searchBar flex gap-5 text-white">
         <div className="innerImg relative group">
-          <div className="grayHover absolute -top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 cursor-pointer" onClick={() => setSection("profile")}></div>
-          <button onClick={() => setSection("profile")}>
+          <div className="grayHover absolute -top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 cursor-pointer" onClick={() => handleSection}></div>
+          <button>
             <img
               src="https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=689576991239114&height=300&width=300&ext=1735609155&hash=AbY31jEja-YXeJpGGDc2IyVB"
               alt=""
