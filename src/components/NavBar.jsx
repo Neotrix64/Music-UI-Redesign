@@ -1,6 +1,7 @@
 import search from '../Icons/busqueda (1).png'
 import constants from '../consts/globalConstants';
-
+import { useSection } from "./Contexts/HomeContext";
+import usuario from "../Icons/usuario.png";
 
 function NavBar() {
   const getRandomPlaceHolder = () =>{
@@ -9,11 +10,13 @@ function NavBar() {
     return placeholders[randomIndex];
   }
   
-  
+  const { setSection } = useSection();
+
   return (
-    <nav className="flex justify-between text-white p-4 bg-[#000] rounded-b-xl ">
-      <div className="logo flex gap-2 text-xl">
+    <nav className="flex justify-between text-white p-4 bg-[#000] rounded-b-xl  ">
+      <div className="logo flex gap-2 text-xl items-center">
         <img
+          draggable="false"
           src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/spotify-white-icon.png"
           alt=""
           className="size-9"
@@ -22,14 +25,14 @@ function NavBar() {
       </div>
       <div className="searchBar flex gap-5 text-white">
         <div className="innerImg relative group">
-          <div className="grayHover absolute -top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"></div>
-          <a href="">
+          <div className="grayHover absolute -top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 cursor-pointer" onClick={() => setSection("profile")}></div>
+          <button onClick={() => setSection("profile")}>
             <img
               src="https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=689576991239114&height=300&width=300&ext=1735609155&hash=AbY31jEja-YXeJpGGDc2IyVB"
               alt=""
               className="size-9 rounded-full before:bg-black z-7 cursor-pointer"
             />
-          </a>
+          </button>
         </div>
         <img src={search} alt="" className='absolute size-5 ml-[70px] mt-2.5'/>
         

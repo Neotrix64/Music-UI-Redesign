@@ -4,13 +4,17 @@ import MiddlePageInfo from "./components/MiddlePageInfo";
 import MusicFooter from "./components/MusicFooter"
 import Theme from './pages/Theme'
 import { HomeSectionProvider } from "./components/Contexts/HomeContext";
+import Carousel from "./components/Carousel";
 
 function App() {
   return (
     <>
+    <HomeSectionProvider>
       <NavBar />
       <MiddlePageInfo />
       <MusicFooter/>
+      </HomeSectionProvider>
+      
     </>
   );
 }

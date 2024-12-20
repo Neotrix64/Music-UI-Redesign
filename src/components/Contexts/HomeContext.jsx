@@ -4,6 +4,7 @@ const HomeContext = createContext();
 
 export const HomeSectionProvider = ({ children }) =>{
     const [section, setSection] = useState("home");
+    
     return(
         <HomeContext.Provider value ={{section, setSection}}>
             {children}

@@ -7,9 +7,8 @@ function middlePageInfo() {
       <>
       <div className="flex">
       <SideBar/>
-      <HomeSectionProvider>
       <SectionContent/>
-          </HomeSectionProvider>
+          
       
       </div>
       </>   
