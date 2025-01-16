@@ -6,22 +6,26 @@ import facebook from "../Icons/facebook.png";
 import discord from "../Icons/discord.png";
 import instagram from "../Icons/instagram.png";
 import artists from "../consts/artists";
+import pause from "../Icons/OriginalImported";
 
 function SectionContent() {
   const { setSection, section } = useSection();
   const [selectedArtist, setArtist] = useState(artists[0]);
+  const [useFilter, setFilter] = useState("popular");
+  const [useProfileFilter, setProfileFilter] = useState("information");
+  console.log(section)
 
   const handleChange = (artist) => {
     setArtist(artist);
   };
 
   const handleSectionProfile = () => {
-    setSection("profile");
+    setSection("home");
   };
 
   if (section === "home") {
     return (
-      <div className="text-white bg-[#181818] w-full min-h-[77vh] max-h-[72vh] rounded-md mr-3 overflow-y-scroll">
+      <div className="text-white bg-[#181818] h-[88vh] w-full rounded-md mr-3 overflow-y-scroll">
         <div className="banner w-full bg-gradient-to-b from-[#545454] to-[#2c2c2c] h-96 relative overflow-hidden">
           {/* Imagen de fondo */}
           <img
@@ -71,13 +75,14 @@ function SectionContent() {
                 alt=""
                 className="size-40 rounded-lg"
               />
+
               <div className="albumInfo flex flex-col">
                 <p>GNX</p>
                 <p
                   className="text-white/50 hover:text-white duration-300"
                   onClick={() => {
+                    handleChange(artists[0]); // Ejecuta handleChange
                     handleSectionProfile(); // Ejecuta handleSectionProfile
-                    handleChange(artists[0]); // Ejecuta handleChange con el segundo artista
                   }}
                 >
                   Kendrick Lamar
@@ -85,6 +90,7 @@ function SectionContent() {
               </div>
             </li>
             <li className="ml-5 hover:bg-[#282828] w-fit h-fit p-4 rounded-md cursor-pointer duration-300 ease-in-out">
+              <div className="absolute size-10 bg-green-400 rounded-full"></div>
               <img
                 src="https://i.scdn.co/image/ab67616d0000b273a7558dd7d6526ad0856de685"
                 alt=""
@@ -95,10 +101,12 @@ function SectionContent() {
                 <p
                   className="text-white/50 hover:text-white duration-300"
                   onClick={() => {
+                    handleChange(artists[2]); // Ejecuta handleChange
                     handleSectionProfile(); // Ejecuta handleSectionProfile
-                    handleChange(artists[2]); // Ejecuta handleChange con el segundo artista
                   }}
-                >Kevin Kaarl</p>
+                >
+                  Kevin Kaarl
+                </p>
               </div>
             </li>
             <li className="ml-5 hover:bg-[#282828] w-fit h-fit p-4 rounded-md cursor-pointer duration-300 ease-in-out">
@@ -112,10 +120,12 @@ function SectionContent() {
                 <p
                   className="text-white/50 hover:text-white duration-300"
                   onClick={() => {
+                    handleChange(artists[1]); // Ejecuta handleChange
                     handleSectionProfile(); // Ejecuta handleSectionProfile
-                    handleChange(artists[1]); // Ejecuta handleChange con el segundo artista
                   }}
-                >Sub Urban</p>
+                >
+                  Sub Urban
+                </p>
               </div>
             </li>
             <li className="ml-5 hover:bg-[#282828] w-fit h-fit p-4 rounded-md cursor-pointer duration-300 ease-in-out">
@@ -129,10 +139,12 @@ function SectionContent() {
                 <p
                   className="text-white/50 hover:text-white duration-300"
                   onClick={() => {
+                    handleChange(artists[1]); // Ejecuta handleChange
                     handleSectionProfile(); // Ejecuta handleSectionProfile
-                    handleChange(artists[0]); // Ejecuta handleChange con el segundo artista
                   }}
-                >Sub Urban</p>
+                >
+                  Sub Urban
+                </p>
               </div>
             </li>
             <li className="ml-5 hover:bg-[#282828] w-fit h-fit p-4 rounded-md cursor-pointer duration-300 ease-in-out">
@@ -146,21 +158,25 @@ function SectionContent() {
                 <p
                   className="text-white/50 hover:text-white duration-300"
                   onClick={() => {
+                    handleChange(artists[0]); // Ejecuta handleChange
                     handleSectionProfile(); // Ejecuta handleSectionProfile
-                    handleChange(artists[0]); // Ejecuta handleChange con el segundo artista
                   }}
-                >Kendrick Lamar</p>
+                >
+                  Kendrick Lamar
+                </p>
               </div>
             </li>
           </ul>
         </div>
+        <h3 className="text-2xl font-semibold p-5">Jump Back In</h3>
+        {pause};
       </div>
     );
   }
 
   if (section === "profile") {
     return (
-      <div className="text-white bg-[#181818] w-full min-h-[77vh] max-h-[72vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar ">
+      <div className="text-white bg-[#181818] w-full h-[88vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar">
         {selectedArtist && (
           <>
             <div className="banner w-full bg-gradient-to-b from-[#545454] to-[#2c2c2c] h-96 content-center relative overflow-hidden">
@@ -202,26 +218,68 @@ function SectionContent() {
               <div className="content">
                 <h1 className="pt-5 pl-3 flex justify-center text-lg font-semibold tracking-wide">
                   <ul className="flex gap-3 text-white/50">
-                    <li className="text-white ease-in-out duration-300 border-b-2 border-white/100 cursor-pointer">
-                      <button>Popular</button>
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "popular" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                      <button
+                        onClick={() => {
+                          setFilter("popular");
+                        }}
+                      >
+                        Popular
+                      </button>
                     </li>
-                    <li className="hover:text-white ease-in-out duration-300 hover:border-white/50 cursor-pointer">
-                      Artist Pick
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "artistpick" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <button
+                        onClick={() => {
+                          setFilter("artistpick");
+                        }}
+                      >
+                        Artist Pick
+                      </button>
                     </li>
-                    <li className="hover:text-white ease-in-out duration-300 hover:border-white/50 cursor-pointer">
-                      Discography
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "discography" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <button
+                        onClick={() => {
+                          setFilter("discography");
+                        }}
+                      >
+                        Discography
+                      </button>
                     </li>
-                    <li className="hover:text-white ease-in-out duration-300 hover:border-white/50 cursor-pointer">
-                      Featuring
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "featuring" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <button
+                        onClick={() => {
+                          setFilter("featuring");
+                        }}
+                      >
+                        Featuring
+                      </button>
                     </li>
-                    <li className="hover:text-white ease-in-out duration-300 hover:border-white/50 cursor-pointer">
-                      Loved by fans
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "Loved" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <button
+                        onClick={() => {
+                          setFilter("Loved");
+                        }}
+                      >
+                        Loved By Fans
+                      </button>
                     </li>
-                    <li className="hover:text-white ease-in-out duration-300 hover:border-white/50 cursor-pointer">
-                      Appears on
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "appearsOn" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <button
+                        onClick={() => {
+                          setFilter("appearsOn");
+                        }}
+                      >
+                        Appears on
+                      </button>
                     </li>
-                    <li className="hover:text-white ease-in-out duration-300 hover:border-white/50 cursor-pointer">
-                      About
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "About" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <button
+                        onClick={() => {
+                          setFilter("About");
+                        }}
+                      >
+                        About
+                      </button>
                     </li>
                   </ul>
                 </h1>
@@ -236,7 +294,7 @@ function SectionContent() {
   // Manejo de otras secciones si es necesario
   if (section === "myProfile") {
     return (
-      <div className="text-white bg-[#181818] w-full min-h-[77vh] max-h-[72vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar ">
+      <div className="text-white bg-[#181818] w-full h-[88vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar ">
         <div className="banner w-full bg-gradient-to-b from-[#545454] to-[#2c2c2c] h-96 content-center shadow-2xl shadow-black">
           <div className="separador flex justify-between">
             <div className="info flex">
@@ -307,6 +365,47 @@ function SectionContent() {
             </h1>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (section === "album") {
+    return (
+      <div className="text-white bg-[#181818] w-full h-[88vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar ">
+        <div className="banner w-full bg-gradient-to-b from-[#545454] to-[#2c2c2c] h-60 relative overflow-hidden">
+          {/* Imagen de fondo */}
+          <img
+            src="https://assets.rebelmouse.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbWFnZSI6Imh0dHBzOi8vYXNzZXRzLnJibC5tcy8yMjg3MjIxNi9vcmlnaW4uanBnIiwiZXhwaXJlc19hdCI6MTc4Njc0NzAzMH0.jJoO2IcUGdrOsRJ3CwI_inIwsZvqap9TNmzV2liTnIo/img.jpg?width=1200&height=600&coordinates=0%2C0%2C0%2C207"
+            alt="info section"
+            className="relative w-full h-full object cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-transparent backdrop-blur-sm pointer-events-none"></div>
+
+          <div className="content flex gap-6 pl-4 absolute bottom-5 left-4 w-full">
+            <img
+              src="https://i.scdn.co/image/ab67616d0000b27309545e98d9172b05b28f5c0a"
+              alt=""
+              className="size-2/12"
+            />
+            <div className="flex flex-col bottom-0">
+              <h2 className="text-5xl font-semibold tracking-wide">
+                Thrill seeker
+              </h2>
+              <h4 className="text-xl text-white/50">
+                Thrill Seeker is a character and alter-ego of the north-american
+                <br />
+                singer and composer Daniel Virgil Maisonneuve,
+                <br />
+                better known as Sub Urban.
+              </h4>
+              <button className="bg-green-500 text-white w-1/4 h-1/3 rounded-full mt-3">
+                Play
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="banner w-full bg-gradient-to-b from-[#181818] to-[#121212] h-full shadow-2xl shadow-black"></div>
       </div>
     );
   }

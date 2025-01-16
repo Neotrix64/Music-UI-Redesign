@@ -1,7 +1,7 @@
 function SideBar() {
   return (
     <>
-      <div className="sidebar text-white bg-[#181818] w-1/3 rounded-lg mx-2 min-h-[77vh] max-h-[72vh]">
+      <div className="sidebar text-white bg-[#181818] h-[88vh] w-1/3 rounded-lg mx-2">
         <aside>
 
           <p>My Library</p>
