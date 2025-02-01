@@ -8,8 +8,6 @@ function middlePageInfo() {
       <div className="flex">
       <SideBar/>
       <SectionContent/>
-          
-      
       </div>
       </>   
     );
