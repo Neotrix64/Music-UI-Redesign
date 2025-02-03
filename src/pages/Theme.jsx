@@ -1,4 +1,4 @@
-import unnamed from "../components/Icons/unnamed.png";
+import unnamed from "../Icons/unnamed.png";
 
 function Theme() {
     return (

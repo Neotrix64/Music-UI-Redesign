@@ -1,4 +1,4 @@
-import fullscreen from "./Icons/menu-hamburguesa.png";
+import fullscreen from "../Icons/menu-hamburguesa.png";
 import {useState} from "react"
 
 

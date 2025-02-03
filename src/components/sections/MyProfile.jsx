@@ -1,8 +1,8 @@
 import profile from "../consts/profile";
-import carrito from "../Icons/carrito-de-compras (1).png";
-import facebook from "../Icons/facebook.png";
-import discord from "../Icons/discord.png";
-import instagram from "../Icons/instagram.png";
+import carrito from "../../Icons/carrito-de-compras (1).png";
+import facebook from "../../Icons/facebook.png";
+import discord from "../../Icons/discord.png";
+import instagram from "../../Icons/instagram.png";
 import { useState } from "react";
 
 function MyProfile(){
