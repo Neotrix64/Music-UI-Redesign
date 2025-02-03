@@ -1,20 +1,35 @@
-import search from './Icons/busqueda (1).png'
-import constants from './consts/globalConstants';
+import { useEffect, useState } from "react";
+import search from "./Icons/busqueda (1).png";
+import constants from "./consts/globalConstants";
 import { useSection } from "./Contexts/HomeContext";
-// import usuario from "../Icons/usuario.png";
 
 function NavBar() {
-  const getRandomPlaceHolder = () =>{
+  const getRandomPlaceHolder = () => {
     const placeholders = constants.placeholders;
     const randomIndex = Math.floor(Math.random() * placeholders.length);
     return placeholders[randomIndex];
-  }
-  
-  const { setSection } = useSection();
+  };
 
-  const handleSection = () =>{
+  const [useNav, setNavText] = useState("");
+
+  const handleChangeNav = (event) => {
+    setNavText(event.target.value);
+  };
+
+  const { setSection, section } = useSection();
+
+  const handleSection = () => {
     setSection("myProfile");
-  }
+  };
+
+  useEffect(() => {
+    // Solo se ejecuta cuando useNav cambia y no está vacío
+    if (useNav.length > 0) {
+      setSection("SearchSection");
+    } else if(section === "SearchSection") {
+      setSection("home"); //EN VEZ DE HOME DEBO PONER UNA SECCION DE BROWSE
+    }
+  }, [useNav]); // El efecto se ejecuta cuando useNav cambia
 
   return (
     <nav className="flex justify-center text-white lg:p-4 pb-14 bg-[#000] rounded-b-xl  ">
@@ -29,7 +44,10 @@ function NavBar() {
       </div>
       <div className="searchBar lg:flex hidden gap-5 text-white">
         <div className="innerImg relative group">
-          <div className="grayHover absolute -top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 cursor-pointer" onClick={() => handleSection()}></div>
+          <div
+            className="grayHover absolute -top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 cursor-pointer"
+            onClick={() => handleSection()}
+          ></div>
           <button>
             <img
               src="https://i.pinimg.com/736x/05/f6/bc/05f6bcbdbc6877781dcd16e0de729a20.jpg"
@@ -38,17 +56,21 @@ function NavBar() {
             />
           </button>
         </div>
-        <img src={search} alt="" className='absolute size-5 ml-[70px] mt-2.5'/>
-        
+        <img src={search} alt="" className="absolute size-5 ml-[70px] mt-2.5" />
+
         <input
           type="text"
           className="rounded-3xl pl-12 w-[500px] pr-5 bg-white/10 tracking-wider hover:bg-white/20 ease-in-out duration-700 focus:bg-white/20 placeholder:text-white/50 cursor-pointer"
+          value={useNav}
+          onChange={handleChangeNav}
           placeholder={getRandomPlaceHolder()}
         />
-        <button className='rounded-full bg-white/10 p-5 -ml-3'></button>
+        <button className="rounded-full bg-white/10 p-5 -ml-3"></button>
       </div>
       <div className="boton absolute right-0 lg:flex gap-5 hidden">
-        <button className=" font-medium hover:scale-110 ease-in-out duration-300">Install App</button>
+        <button className=" font-medium hover:scale-110 ease-in-out duration-300">
+          Install App
+        </button>
         <button className="bg-white text-black px-4 py-2 rounded-3xl font-medium hover:text-white hover:bg-green-500 duration-700">
           Explore Premium
         </button>

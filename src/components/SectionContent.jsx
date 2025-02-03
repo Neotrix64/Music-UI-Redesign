@@ -3,7 +3,7 @@ import MyProfile from "./sections/MyProfile";
 import Home from "./sections/Home";
 import ArtistProfile from "./sections/ArtistProfile";
 import AlbumSection from "./sections/AlbumSection";
-
+import SearchSection from "./sections/SearchSection";
 
 function SectionContent() {
   const { section } = useSection();
@@ -33,6 +33,12 @@ function SectionContent() {
   if (section === "album") {
     return (
       <AlbumSection/>
+    );
+  }
+
+  if (section === "SearchSection") {
+    return (
+      <SearchSection/>
     );
   }
 }

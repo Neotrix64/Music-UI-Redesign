@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useSection } from "../Contexts/HomeContext";
 import artists from "../consts/artists";
+import useArtistStore from "../../store/useAppStore";
 
 function Home() {
-  const [selectedArtist, setArtist] = useState(artists[0]);
+  const { setArtist } = useArtistStore(); // Usa zustand para manejar el estado global
   const { setSection, section } = useSection();
   const handleChange = (artist) => {
     setArtist(artist);

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import artists from "../consts/artists";
+import useArtistStore from "../../store/useAppStore";
+
 
 function ArtistProfile(){
-    const [selectedArtist, setArtist] = useState(artists[0]);
+  const { selectedArtist } = useArtistStore();
     const [useFilter, setFilter] = useState("popular");
     return(
         <div className="text-white bg-[#181818] w-full h-[88vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar">
