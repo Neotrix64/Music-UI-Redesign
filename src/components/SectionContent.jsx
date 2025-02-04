@@ -8,39 +8,16 @@ import SearchSection from "./sections/SearchSection";
 function SectionContent() {
   const { section } = useSection();
 
-  console.log(section)
+  const sectionsMap = {
+    home: <Home />,
+    profile: <ArtistProfile />,
+    myProfile: <MyProfile />,
+    album: <AlbumSection />,
+    SearchSection: <SearchSection />,
+  };
 
-
-  if (section === "home") {
-    return (
-      <Home/>
-    );
-  }
-
-  if (section === "profile") {
-    return (
-     <ArtistProfile/>
-    );
-  }
-
-  // Manejo de otras secciones si es necesario
-  if (section === "myProfile") {
-    return (
-      <MyProfile/>
-    );
-  }
-
-  if (section === "album") {
-    return (
-      <AlbumSection/>
-    );
-  }
-
-  if (section === "SearchSection") {
-    return (
-      <SearchSection/>
-    );
-  }
+  // Devuelve el componente correspondiente basado en el valor de `section`
+  return sectionsMap[section] || null;
 }
 
 export default SectionContent;

@@ -1,11 +1,16 @@
-import { useState } from "react";
-import artists from "../consts/artists";
 import useArtistStore from "../../store/useAppStore";
+import ProfileSongs from "../ArtistProfile/ProfileSongs";
+import useProfileStore from "../../store/useProfileFilter";
 
 
 function ArtistProfile(){
   const { selectedArtist } = useArtistStore();
-    const [useFilter, setFilter] = useState("popular");
+  const { useProfileFilter, setProfileFilter } = useProfileStore();
+
+  const handleFilterChange = (artist) => {
+    setProfileFilter(artist);
+  };
+
     return(
         <div className="text-white bg-[#181818] w-full h-[88vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar">
         {selectedArtist && (
@@ -49,64 +54,64 @@ function ArtistProfile(){
               <div className="content">
                 <h1 className="pt-5 pl-3 flex justify-center text-lg font-semibold tracking-wide">
                   <ul className="flex gap-3 text-white/50">
-                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "popular" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useProfileFilter === "popular" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
                       <button
                         onClick={() => {
-                          setFilter("popular");
+                          handleFilterChange("popular");
                         }}
                       >
                         Popular
                       </button>
                     </li>
-                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "artistpick" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useProfileFilter === "artistpick" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
                     <button
                         onClick={() => {
-                          setFilter("artistpick");
+                          handleFilterChange("artistpick");
                         }}
                       >
                         Artist Pick
                       </button>
                     </li>
-                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "discography" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useProfileFilter === "discography" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
                     <button
                         onClick={() => {
-                          setFilter("discography");
+                          handleFilterChange("discography");
                         }}
                       >
                         Discography
                       </button>
                     </li>
-                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "featuring" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useProfileFilter === "featuring" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
                     <button
                         onClick={() => {
-                          setFilter("featuring");
+                          handleFilterChange("featuring");
                         }}
                       >
                         Featuring
                       </button>
                     </li>
-                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "Loved" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useProfileFilter === "Loved" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
                     <button
                         onClick={() => {
-                          setFilter("Loved");
+                          handleFilterChange("Loved");
                         }}
                       >
                         Loved By Fans
                       </button>
                     </li>
-                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "appearsOn" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useProfileFilter === "appearsOn" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
                     <button
                         onClick={() => {
-                          setFilter("appearsOn");
+                          handleFilterChange("appearsOn");
                         }}
                       >
                         Appears on
                       </button>
                     </li>
-                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useFilter === "About" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
+                    <li className={`ease-in-out duration-300 border-b-2 cursor-pointer ${useProfileFilter === "About" ? "border-white/100 text-white" : "border-transparent hover:text-white"}`}>
                     <button
                         onClick={() => {
-                          setFilter("About");
+                          handleFilterChange("About");
                         }}
                       >
                         About
