@@ -46,8 +46,8 @@ Utiliza **Axios** para consumir las rutas del backend, y **Tailwind CSS** para u
 ### 1. Clonar el Repositorio
 
 ```bash
-git clone https://github.com/Neotrix64/my-app
-cd my-app
+git clone https://github.com/Neotrix64/Spotify-Redesign
+cd Spotify-Redesign
 
 ```
 
