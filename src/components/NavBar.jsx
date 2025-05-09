@@ -32,31 +32,30 @@ function NavBar() {
   }, [useNav]); // El efecto se ejecuta cuando useNav cambia
 
   return (
-    <nav className="flex justify-center text-white lg:p-4 pb-14 bg-[#000] rounded-b-xl  ">
-      <div className="logo flex absolute left-5 gap-2 text-xl items-center">
+    <nav className="flex justify-center items-center text-white lg:p-4 pb-14 bg-[#000] rounded-b-xl  ">
+      <div className="logo flex absolute left-5 text-xl items-center">
         <img
           draggable="false"
-          src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/spotify-white-icon.png"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/1280px-Spotify_logo_with_text.svg.png"
           alt=""
-          className="size-9"
+          className="h-10"
         />
-        <p className="">Spotify</p>
       </div>
       <div className="searchBar lg:flex hidden gap-5 text-white">
-        <div className="innerImg relative group">
+        <div className="innerImg flex items-center relative group">
           <div
-            className="grayHover absolute -top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 cursor-pointer"
+            className="grayHover absolute top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 cursor-pointer"
             onClick={() => handleSection()}
           ></div>
           <button>
             <img
               src="https://i.pinimg.com/736x/05/f6/bc/05f6bcbdbc6877781dcd16e0de729a20.jpg"
               alt=""
-              className="size-9 rounded-full before:bg-black z-7 cursor-pointer"
+              className="size-9 rounded-full mt-1 before:bg-black z-7 cursor-pointer"
             />
           </button>
         </div>
-        <img src={search} alt="" className="absolute size-5 ml-[70px] mt-2.5" />
+        <img src={search} alt="" className="absolute size-5 ml-[70px] mt-3.5" />
 
         <input
           type="text"
@@ -65,7 +64,7 @@ function NavBar() {
           onChange={handleChangeNav}
           placeholder={getRandomPlaceHolder()}
         />
-        <button className="rounded-full bg-white/10 p-5 -ml-3"></button>
+        <button className="rounded-full bg-white/10 p-6 -ml-3"></button>
       </div>
       <div className="boton absolute right-0 lg:flex gap-5 hidden">
         <button className=" font-medium hover:scale-110 ease-in-out duration-300">

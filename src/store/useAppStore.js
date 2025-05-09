@@ -1,8 +1,7 @@
-import artists from "../components/consts/artists";
 import { create } from "zustand";
 
 const useArtistStore = create((set) => ({
-  selectedArtist: artists[0], // Estado inicial
+  selectedArtist: null,
   setArtist: (artist) => set({ selectedArtist: artist }), // Función para actualizar artista
 }));
 

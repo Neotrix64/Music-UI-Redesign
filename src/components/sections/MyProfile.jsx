@@ -6,7 +6,7 @@ import instagram from "../../Icons/instagram.png";
 import { useState } from "react";
 
 function MyProfile(){
-    const [useProfileFilter, setProfileFilter] = useState("");
+    const [useProfileFilter, setProfileFilter] = useState("Information");
     return(
         <div className="text-white bg-[#181818] w-full h-[88vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar ">
         <div className="banner w-full bg-gradient-to-b from-[#545454] to-[#2c2c2c] h-96 content-center shadow-2xl shadow-black">
