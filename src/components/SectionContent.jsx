@@ -16,7 +16,6 @@ function SectionContent() {
     SearchSection: <SearchSection />,
   };
 
-  // Devuelve el componente correspondiente basado en el valor de `section`
   return sectionsMap[section] || null;
 }
 

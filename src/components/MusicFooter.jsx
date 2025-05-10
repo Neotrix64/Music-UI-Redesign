@@ -14,10 +14,9 @@ function MusicFooter() {
     title: "Pursuit Of Happiness - Extended Steve Aoki Remix",
     artists: "Kid Cudi, MGMT, Ratatat, Steve Aoki",
     cover: "https://i.scdn.co/image/ab67616d00004851fe7908b7666690bf4e83ce14",
-    src: "https://res.cloudinary.com/dvn98cysr/video/upload/v1746501713/Kid_Cudi_-_Pursuit_Of_Happiness_Nightmare_432Hz_umbang.mp3" // Reemplazar con la URL real de la canción
+    src: "https://res.cloudinary.com/dvn98cysr/video/upload/v1746501713/Kid_Cudi_-_Pursuit_Of_Happiness_Nightmare_432Hz_umbang.mp3"
   });
   
-  // Lista de canciones de ejemplo
   const playlist = [
     {
       title: "Pursuit Of Happiness - Extended Steve Aoki Remix",
@@ -89,7 +88,6 @@ function MusicFooter() {
   useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
-        // Solución para evitar el error "The play() request was interrupted by a call to pause()"
         const playPromise = audioRef.current.play();
         
         if (playPromise !== undefined) {
@@ -104,7 +102,7 @@ function MusicFooter() {
         }
       } else {
         // Solo pausar si no hay una promesa de reproducción pendiente
-        if (audioRef.current.readyState >= 2) { // HAVE_CURRENT_DATA o superior
+        if (audioRef.current.readyState >= 2) {
           audioRef.current.pause();
         }
       }
@@ -189,9 +187,7 @@ function MusicFooter() {
 
   return (
     <aside className="fixed bottom-0 left-0 right-0 flex justify-between items-center w-full px-6 py-4 text-white bg-[#000] rounded-t-xl shadow-lg z-50">
-      {/* Botón para cargar música (opcional) */}
       <LoadMusicButton onSongLoaded={(song) => {
-        // Asegúrate de pausar cualquier reproducción actual antes de cambiar
         if (audioRef.current) {
           audioRef.current.pause();
         }
@@ -309,7 +305,6 @@ function MusicFooter() {
   );
 }
 
-// Componente para cargar MP3 localmente (opcional)
 function LoadMusicButton({ onSongLoaded }) {
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -318,7 +313,7 @@ function LoadMusicButton({ onSongLoaded }) {
       onSongLoaded({
         title: file.name.replace(/\.[^/.]+$/, ""),
         artists: "Local File",
-        cover: "https://i.scdn.co/image/ab67616d00004851e8fccada5b6f6b8e9547c061", // Imagen por defecto
+        cover: "https://i.scdn.co/image/ab67616d00004851e8fccada5b6f6b8e9547c061",
         src: objectUrl
       });
     }
