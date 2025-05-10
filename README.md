@@ -1,6 +1,7 @@
-# 🎵 Spotify Frontend Rediseñado
+# 🎵 Spotify Frontend Rediseñado (Estado: En Proceso)
 
-![image](https://github.com/user-attachments/assets/c1d852d0-be57-4f55-a902-95344d42c493)
+![image](https://github.com/user-attachments/assets/048a454a-dfbe-4cee-9bca-ebb51a534d9b)
+
 
 
 Este proyecto es una interfaz de usuario totalmente rediseñada de Spotify, creada con **React**, **Tailwind CSS**, y **Axios**.  
