@@ -5,7 +5,7 @@ export const THEME = {
     --theme-ui-colors-text: #ffffff;
     --theme-ui-colors-text-light: rgba(255, 255, 255, 0.7);
     --theme-ui-colors-border: rgba(255, 255, 255, 0.1);
-    
+    -margin-top: 100px;
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;

@@ -7,26 +7,35 @@ import {
   HeaderCell,
   Cell,
 } from "@table-library/react-table-library/table";
+
+import {
+  useRowSelect,
+  HeaderCellSelect,
+  CellSelect,
+  SelectClickTypes,
+  SelectTypes,
+} from "@table-library/react-table-library/select";
+import useSongStore from "../../store/useSongStore"
+
 import { useEffect, useState } from "react";
 import useAlbumStore from "../../store/useAlbumStore";
 
 import { THEME } from "./utils/theme";
 import { useTheme } from "@table-library/react-table-library/theme";
-import { getRelativeTime } from "../../utils/formatDate";
 
 function AlbumTable() {
-
   const selectedAlbum = useAlbumStore((state) => state.selectedAlbum);
   const setSelectedAlbum = useAlbumStore((state) => state.setSelectedAlbum);
   const [tableData, setTableData] = useState({ nodes: [] });
-   const [songs, setSongs] = useState([]);
+  const [songs, setSongs] = useState([]);
+  const setCurrentSong = useSongStore((state) => state.setCurrentSong)
+  
 
-
-   useEffect(() => {
+  useEffect(() => {
     if (selectedAlbum && selectedAlbum.idSongs) {
       setSongs(selectedAlbum.idSongs);
 
-      const portada = selectedAlbum.albumCover
+      const portada = selectedAlbum.albumCover;
       
       const formattedSongs = selectedAlbum.idSongs.map((song, index) => ({
         id: song._id,
@@ -36,7 +45,8 @@ function AlbumTable() {
         artist: selectedAlbum.idArtist ? selectedAlbum.idArtist.name : "Unknown Artist",
         url: song.url,
         isComplete: Math.random() > 0.5,
-        duration: "4:00"
+        duration: "4:00",
+        originalSong: song
       }));
       
       setTableData({ nodes: formattedSongs });
@@ -44,6 +54,7 @@ function AlbumTable() {
   }, [selectedAlbum]);
 
   const theme = useTheme(THEME);
+  const select = useRowSelect(tableData, {}, {});
 
   const formatDuration = (dateString) => {
     const minutes = Math.floor(Math.random() * 3) + 2; // Entre 2-4 minutos
@@ -51,7 +62,6 @@ function AlbumTable() {
     return `${minutes}:${seconds}`;
   };
 
-  // Función para formatear la popularidad
   const formatPopularity = (isComplete) => {
     return isComplete ? 
       <span className="flex items-center">
@@ -63,10 +73,33 @@ function AlbumTable() {
       : "";
   };
 
+  const handleSongDoubleClick = (song) => {
+    // Seleccionar la fila en la tabla
+    select.fns.onToggleById(song.id);
+    
+    console.log("Doble clic en canción:", song);
+
+    setCurrentSong(song);
+    
+    // Para acceder a la cancion original de la api
+    if (song.originalSong) {
+      console.log("Canción original:", song.originalSong);
+    }
+    
+    
+    // if (selectedAlbum) {
+    //   const updatedAlbum = {
+    //     ...selectedAlbum,
+    //     currentSongId: song.id
+    //   };
+    //   setSelectedAlbum(updatedAlbum);
+    // }
+  };
+
   return (
     <div className="mt-8">
-      <h3 className="text-2xl font-bold mb-4">Full Album</h3>
-      <Table data={tableData} theme={theme} layout={{ fixedHeader: true }}>
+      <h3 className="text-2xl font-bold -mt-10 mb-4">Full Album</h3>
+      <Table data={tableData} theme={theme} select={select} layout={{ fixedHeader: true }}>
         {(tableList) => (
           <>
             <Header>
@@ -81,7 +114,12 @@ function AlbumTable() {
 
             <Body>
               {tableList.map((item, index) => (
-                <Row key={item.id} item={item}>
+                <Row 
+                  key={item.id} 
+                  item={item} 
+                  onDoubleClick={() => handleSongDoubleClick(item)} 
+                  className={select.state.ids.includes(item.id) ? "bg-gray-800" : ""}
+                >
                   <Cell className="text-white/50">{index + 1}</Cell>
                   <Cell>
                     <div className="flex items-center">

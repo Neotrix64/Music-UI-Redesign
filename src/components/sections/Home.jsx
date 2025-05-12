@@ -61,7 +61,7 @@ function Home() {
           </p>
 
           {/* Contenido del banner */}
-          <div className="content flex flex-col gap-6 pl-4 absolute bottom-20 left-4 w-full z-10">
+          <div className="content flex flex-col gap-6 pl-8 absolute bottom-20 w-full z-10">
             <div className="text flex flex-col gap-4">
               <h2 className="text-5xl font-semibold tracking-wide">
                 What's hot this weekend?
@@ -87,30 +87,28 @@ function Home() {
       </div>
 
       {/* Contenido principal */}
-      <div className="content-section bg-[#181818] px-5 pt-3 pb-8">
-        <h3 className="text-2xl font-semibold py-5">Recommended albums</h3>
+      <div className="content-section bg-[#181818] pt-3 pb-96">
+        <h3 className="text-2xl font-semibold py-5 ml-5">Recommended albums</h3>
         <div className="albums overflow-x-auto scrollbar-hide">
           <ul className="flex space-x-5 w-max">
-            {albums.map((album, index) => {
-              return (
-                <li
-                  key={index}
-                  onClick={() => {
-                    handleAlbumChange(album);
-                  }}
-                  className="ml-5 hover:bg-[#202020] w-fit h-fit p-4 rounded-md cursor-pointer duration-500 ease-in-out"
-                >
+            {albums.map((album, index) => (
+              <li
+                key={index}
+                onClick={() => handleAlbumChange(album)}
+                className="ml-5 hover:bg-[#202020] w-52 p-4 rounded-md cursor-pointer duration-500 ease-in-out"
+              >
+                <div className="flex flex-col items-center">
                   <img
                     src={album.albumCover}
                     alt={album.name}
                     className="size-40 rounded-lg shadow-black drop-shadow-sm"
                   />
-
-                  <div className="albumInfo flex flex-col mt-2">
-                    <p className="font-medium">{album.name}</p>
+                  <div className="ml-5 mt-2 w-full">
+                    <p className="font-medium truncate">{album.name}</p>
                     <p
-                      className="text-white/50 hover:text-white duration-300"
-                      onClick={() => {
+                      className="text-white/50 hover:text-white duration-300 truncate"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         handleChange(album.idArtist);
                         handleSectionProfile();
                       }}
@@ -118,9 +116,9 @@ function Home() {
                       {album.idArtist.name}
                     </p>
                   </div>
-                </li>
-              );
-            })}
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
         <h3 className="text-2xl font-semibold py-5">Jump Back In</h3>

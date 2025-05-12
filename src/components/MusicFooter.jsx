@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import fullscreen from "../Icons/menu-hamburguesa.png";
 import { Play, Pause, SkipBack, SkipForward, Heart, Volume2, Maximize2 } from "lucide-react";
+import useSongStore from "../store/useSongStore";
+import useAlbumStore from "../store/useAlbumStore";
 
 function MusicFooter() {
   // Referencias y estados
@@ -8,37 +9,14 @@ function MusicFooter() {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [volume, setVolume] = useState(80);
+  const [volume, setVolume] = useState(100);
   const [duration, setDuration] = useState(0);
-  const [currentSong, setCurrentSong] = useState({
-    title: "Pursuit Of Happiness - Extended Steve Aoki Remix",
-    artists: "Kid Cudi, MGMT, Ratatat, Steve Aoki",
-    cover: "https://i.scdn.co/image/ab67616d00004851fe7908b7666690bf4e83ce14",
-    src: "https://res.cloudinary.com/dvn98cysr/video/upload/v1746501713/Kid_Cudi_-_Pursuit_Of_Happiness_Nightmare_432Hz_umbang.mp3"
-  });
-  
-  const playlist = [
-    {
-      title: "Pursuit Of Happiness - Extended Steve Aoki Remix",
-      artists: "Kid Cudi, MGMT, Ratatat, Steve Aoki",
-      cover: "https://i.scdn.co/image/ab67616d00004851fe7908b7666690bf4e83ce14",
-      src: "https://res.cloudinary.com/dvn98cysr/video/upload/v1746501713/Kid_Cudi_-_Pursuit_Of_Happiness_Nightmare_432Hz_umbang.mp3"
-    },
-    {
-      title: "Summertime Sadness",
-      artists: "Lana Del Rey",
-      cover: "https://i.scdn.co/image/ab67616d0000485128a619822165fd0eb2e9969b",
-      src: "https://example.com/music/summertime-sadness.mp3"
-    },
-    {
-      title: "Blinding Lights",
-      artists: "The Weeknd",
-      cover: "https://i.scdn.co/image/ab67616d00004851c8bc90377ee282f863bbef2d",
-      src: "https://example.com/music/blinding-lights.mp3"
-    }
-  ];
+  const { currentSong } = useSongStore();
+  const selectedAlbum = useAlbumStore((state) => state.selectedAlbum);
+  const setCurrentSong = useSongStore((state) => state.setCurrentSong);
+  const playlist = selectedAlbum ? selectedAlbum.idSongs : [];
+  const isPlayerVisible = currentSong && Object.keys(currentSong).length > 0;
 
-  // Función para formatear el tiempo (mm:ss)
   const formatTime = (seconds) => {
     if (isNaN(seconds) || seconds === Infinity) return "0:00";
     const mins = Math.floor(seconds / 60);
@@ -46,15 +24,16 @@ function MusicFooter() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Inicialización del audio
   useEffect(() => {
+    if (!currentSong || !currentSong.url) return;
+
     // Crear elemento de audio si no existe
     if (!audioRef.current) {
       audioRef.current = new Audio();
     }
     
     // Configurar fuente de audio
-    audioRef.current.src = currentSong.src;
+    audioRef.current.src = currentSong.url;
     audioRef.current.volume = volume / 100;
     
     // Cargar metadata del audio
@@ -136,14 +115,19 @@ function MusicFooter() {
     setIsFavorite(!isFavorite);
   };
   
-  // Encontrar el índice de la canción actual en la playlist
+  // Encontrar el índice de la canción actual en la playlist mediante el nombre
   const getCurrentSongIndex = () => {
-    return playlist.findIndex(song => song.title === currentSong.title);
+    if (!playlist || !playlist.length || !currentSong) return -1;
+    return playlist.findIndex(song => song.name === currentSong.name);
   };
   
   // Reproducir canción anterior
   const playPrevSong = () => {
+    if (!playlist || playlist.length === 0) return;
+    
     const currentIndex = getCurrentSongIndex();
+    if (currentIndex === -1) return;
+    
     const prevIndex = currentIndex > 0 ? currentIndex - 1 : playlist.length - 1;
     
     // Pausar el audio actual antes de cambiar la fuente
@@ -153,7 +137,7 @@ function MusicFooter() {
     
     setCurrentSong(playlist[prevIndex]);
     
-    // Retrasar la reproducción para permitir que se actualice la fuente
+    // Retrasar la reproducción para permitir que se actualice los datos
     if (isPlaying) {
       setTimeout(() => {
         if (audioRef.current && audioRef.current.readyState >= 2) {
@@ -165,7 +149,11 @@ function MusicFooter() {
   
   // Reproducir siguiente canción
   const playNextSong = () => {
+    if (!playlist || playlist.length === 0) return;
+    
     const currentIndex = getCurrentSongIndex();
+    if (currentIndex === -1) return;
+    
     const nextIndex = (currentIndex + 1) % playlist.length;
     
     // Pausar el audio actual antes de cambiar la fuente
@@ -185,8 +173,11 @@ function MusicFooter() {
     }
   };
 
+  // Si no hay canción actual, no renderizar el componente
+  if (!isPlayerVisible) return null;
+
   return (
-    <aside className="fixed bottom-0 left-0 right-0 flex justify-between items-center w-full px-6 py-4 text-white bg-[#000] rounded-t-xl shadow-lg z-50">
+    <aside className="fixed bottom-0 left-0 right-0 w-full px-6 py-4 text-white bg-black rounded-t-xl shadow-lg z-50 flex justify-between items-center">
       <LoadMusicButton onSongLoaded={(song) => {
         if (audioRef.current) {
           audioRef.current.pause();
@@ -195,11 +186,12 @@ function MusicFooter() {
         // Pequeño retraso antes de iniciar la reproducción
         setTimeout(() => setIsPlaying(true), 300);
       }} />
+      
       {/* Sección de la canción */}
       <div className="flex gap-4 items-center w-1/4">
         <div className="relative">
           <img
-            src={currentSong.cover}
+            src={currentSong?.img || currentSong?.cover || "/default-cover.jpg"}
             alt="Album Cover"
             className="w-14 h-14 rounded-md object-cover"
           />
@@ -214,10 +206,10 @@ function MusicFooter() {
         </div>
         <div className="grid">
           <p className="font-semibold text-sm md:text-base truncate">
-            {currentSong.title}
+            {currentSong?.name || currentSong?.title || "Título desconocido"}
           </p>
-          <span className="text-gray-400 text-xs md:text-sm truncate">
-            {currentSong.artists}
+          <span className="text-gray-400 text-xs md:text-sm truncate hover:text-white cursor-pointer ease-in-out duration-300">
+            {currentSong?.artist || currentSong?.artists || "Artista desconocido"}
           </span>
         </div>
       </div>
@@ -227,7 +219,8 @@ function MusicFooter() {
         <div className="controls flex gap-6 items-center">
           <button 
             onClick={playPrevSong}
-            className="text-gray-300 hover:text-white transition-colors"
+            disabled={!playlist || playlist.length <= 1}
+            className="text-gray-300 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <SkipBack size={20} />
           </button>
@@ -239,7 +232,8 @@ function MusicFooter() {
           </button>
           <button 
             onClick={playNextSong}
-            className="text-gray-300 hover:text-white transition-colors"
+            disabled={!playlist || playlist.length <= 1}
+            className="text-gray-300 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <SkipForward size={20} />
           </button>
@@ -278,7 +272,6 @@ function MusicFooter() {
         </div>
       </div>
 
-      {/* Sección de controles derecha */}
       <div className="flex gap-4 items-center w-1/4 justify-end">
         <div className="volume-control hidden md:flex items-center gap-2">
           <Volume2 size={18} className="text-gray-400" />
@@ -312,30 +305,19 @@ function LoadMusicButton({ onSongLoaded }) {
       const objectUrl = URL.createObjectURL(file);
       onSongLoaded({
         title: file.name.replace(/\.[^/.]+$/, ""),
+        name: file.name.replace(/\.[^/.]+$/, ""),
+        artist: "Local File",
         artists: "Local File",
         cover: "https://i.scdn.co/image/ab67616d00004851e8fccada5b6f6b8e9547c061",
+        img: "https://i.scdn.co/image/ab67616d00004851e8fccada5b6f6b8e9547c061",
+        url: objectUrl,
         src: objectUrl
       });
     }
   };
 
-  // return (
-  //   <div className="absolute top-2 right-2">
-  //     <input
-  //       type="file"
-  //       id="music-upload"
-  //       accept="audio/*"
-  //       onChange={handleFileUpload}
-  //       className="hidden"
-  //     />
-  //     <label 
-  //       htmlFor="music-upload" 
-  //       className="cursor-pointer text-xs bg-gray-800 hover:bg-gray-700 px-2 py-1 rounded-full text-gray-300"
-  //     >
-  //       Load MP3
-  //     </label>
-  //   </div>
-  // );
+  return null;
+  
 }
 
 export default MusicFooter;
