@@ -99,11 +99,15 @@ function AlbumSection() {
           </div>
         </div>
 
-        <div className="content-section bg-gradient-to-b from-[#181818] to-[#121212] min-h-[500px] px-6">
+        <div className="content-section bg-gradient-to-b from-[#181818] to-[#121212] min-h-[500px] px-6 pb-96">
           <AlbumTable />
-          <h3 className="text-2xl font-bold mb-4 mt-14">Popular Tracks</h3>
 
-          <div className="tracks-list space-y-2">
+
+          <div className="flex gap-10">
+            
+
+          <div className="tracks-list space-y-2 w-[40%]">
+            <h3 className="text-2xl font-bold mb-4 mt-14">Popular Tracks</h3>
             <div className="track-item flex items-center p-2 hover:bg-white/5 rounded-md">
               <span className="mr-4 text-white/50">1</span>
               <div>
@@ -125,6 +129,10 @@ function AlbumSection() {
                 <div className="text-sm text-white/50">Sub Urban</div>
               </div>
             </div>
+          </div>
+
+          <h3 className="text-2xl font-bold mb-4 mt-14">Related Albums</h3>
+          
           </div>
         </div>
       </div>

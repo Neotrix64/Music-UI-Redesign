@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import search from "../Icons/busqueda (1).png";
 import constants from "./consts/globalConstants";
 import { useSection } from "./Contexts/HomeContext";
+import { House } from "lucide-react";
 
 function NavBar() {
   const getRandomPlaceHolder = () => {
@@ -18,8 +19,8 @@ function NavBar() {
 
   const { setSection, section } = useSection();
 
-  const handleSection = () => {
-    setSection("myProfile");
+  const handleSection = (section) => {
+    setSection(section);
   };
 
   useEffect(() => {
@@ -45,7 +46,7 @@ function NavBar() {
         <div className="innerImg flex items-center relative group">
           <div
             className="grayHover absolute top-1 -left-1 w-11 h-11 rounded-full -z-9 bg-white/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100 cursor-pointer"
-            onClick={() => handleSection()}
+            onClick={() => handleSection("myProfile")}
           ></div>
           <button>
             <img
@@ -59,12 +60,16 @@ function NavBar() {
 
         <input
           type="text"
-          className="rounded-3xl pl-12 w-[500px] pr-5 bg-white/10 tracking-wider hover:bg-white/20 ease-in-out duration-700 focus:bg-white/20 placeholder:text-white/50 cursor-pointer"
+          className="rounded-3xl pl-12 w-[500px] pr-5 bg-white/10 tracking-wider hover:bg-white/20 ease-in-out duration-700 focus:bg-white/20 placeholder:text-white/50 border-[1px] border-transparent hover:border-white/20"
           value={useNav}
           onChange={handleChangeNav}
           placeholder={getRandomPlaceHolder()}
         />
-        <button className="rounded-full bg-white/10 p-6 -ml-3"></button>
+        <div className="relative w-12 h-12">
+          <button onClick={() => handleSection("home")} className="w-full h-full rounded-full bg-white/10 hover:bg-white/20 ease-in-out duration-300 hover:scale-110 flex items-center justify-center">
+            <House color="#ffffff" />
+          </button>
+        </div>
       </div>
       <div className="boton absolute right-0 lg:flex gap-5 hidden">
         <button className=" font-medium hover:scale-110 ease-in-out duration-300">
