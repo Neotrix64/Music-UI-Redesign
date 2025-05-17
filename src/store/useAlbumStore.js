@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 const useAlbumStore = create((set) => ({
-  selectedAlbum: null,
+  selectedAlbum: [],
   setSelectedAlbum: (album) => set({ selectedAlbum: album }),
 }));
 

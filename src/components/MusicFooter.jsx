@@ -14,7 +14,28 @@ function MusicFooter() {
   const { currentSong } = useSongStore();
   const selectedAlbum = useAlbumStore((state) => state.selectedAlbum);
   const setCurrentSong = useSongStore((state) => state.setCurrentSong);
-  const playlist = selectedAlbum ? selectedAlbum.idSongs : [];
+  
+  // Asegurarnos de que tengamos un playlist válido con toda la información de las canciones
+  const getPlaylist = () => {
+    if (!selectedAlbum) return [];
+    
+    // Verificar si idSongs contiene objetos completos o solo IDs
+    if (selectedAlbum.idSongs && selectedAlbum.idSongs.length > 0) {
+      // Verificamos si el primer elemento tiene una propiedad 'name', lo que indicaría
+      // que son objetos completos de canciones
+      if (typeof selectedAlbum.idSongs[0] === 'object' && selectedAlbum.idSongs[0].name) {
+        return selectedAlbum.idSongs;
+      }
+    }
+    
+    // Si llegamos aquí, significa que necesitamos cargar la información completa
+    // Aquí deberías implementar una lógica para obtener las canciones completas
+    // por ahora, devolvemos un array vacío
+    console.warn("El array idSongs no contiene información completa de las canciones");
+    return [];
+  };
+  
+  const playlist = getPlaylist();
   const isPlayerVisible = currentSong && Object.keys(currentSong).length > 0;
 
   const formatTime = (seconds) => {
@@ -115,9 +136,17 @@ function MusicFooter() {
     setIsFavorite(!isFavorite);
   };
   
-  // Encontrar el índice de la canción actual en la playlist mediante el nombre
+  // Encontrar el índice de la canción actual en la playlist
   const getCurrentSongIndex = () => {
     if (!playlist || !playlist.length || !currentSong) return -1;
+    
+    // Intentar encontrar primero por ID si está disponible
+    if (currentSong._id) {
+      const index = playlist.findIndex(song => song._id === currentSong._id);
+      if (index !== -1) return index;
+    }
+    
+    // Si no encontramos por ID, buscamos por nombre
     return playlist.findIndex(song => song.name === currentSong.name);
   };
   
@@ -176,6 +205,32 @@ function MusicFooter() {
   // Si no hay canción actual, no renderizar el componente
   if (!isPlayerVisible) return null;
 
+  // Determinar la información del artista
+  const getArtistInfo = () => {
+    if (currentSong.artist) return currentSong.artist;
+    if (currentSong.artists) return currentSong.artists;
+    
+    // Si tenemos acceso al album y este tiene idArtist con nombre
+    if (selectedAlbum && selectedAlbum.idArtist && selectedAlbum.idArtist.name) {
+      return selectedAlbum.idArtist.name;
+    }
+    
+    return "Artista desconocido";
+  };
+
+  // Determinar la portada del album
+  const getAlbumCover = () => {
+    if (currentSong.img) return currentSong.img;
+    if (currentSong.cover) return currentSong.cover;
+    if (currentSong.albumCover) return currentSong.albumCover;
+    
+    if (selectedAlbum && selectedAlbum.albumCover) {
+      return selectedAlbum.albumCover;
+    }
+    
+    return "/default-cover.jpg";
+  };
+
   return (
     <aside className="fixed bottom-0 left-0 right-0 w-full px-6 py-4 text-white bg-black rounded-t-xl shadow-lg z-50 flex justify-between items-center">
       <LoadMusicButton onSongLoaded={(song) => {
@@ -183,15 +238,13 @@ function MusicFooter() {
           audioRef.current.pause();
         }
         setCurrentSong(song);
-        // Pequeño retraso antes de iniciar la reproducción
         setTimeout(() => setIsPlaying(true), 300);
       }} />
       
-      {/* Sección de la canción */}
       <div className="flex gap-4 items-center w-1/4">
         <div className="relative">
           <img
-            src={currentSong?.img || currentSong?.cover || "/default-cover.jpg"}
+            src={getAlbumCover()}
             alt="Album Cover"
             className="w-14 h-14 rounded-md object-cover"
           />
@@ -209,7 +262,7 @@ function MusicFooter() {
             {currentSong?.name || currentSong?.title || "Título desconocido"}
           </p>
           <span className="text-gray-400 text-xs md:text-sm truncate hover:text-white cursor-pointer ease-in-out duration-300">
-            {currentSong?.artist || currentSong?.artists || "Artista desconocido"}
+            {getArtistInfo()}
           </span>
         </div>
       </div>
@@ -299,23 +352,6 @@ function MusicFooter() {
 }
 
 function LoadMusicButton({ onSongLoaded }) {
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type.includes('audio')) {
-      const objectUrl = URL.createObjectURL(file);
-      onSongLoaded({
-        title: file.name.replace(/\.[^/.]+$/, ""),
-        name: file.name.replace(/\.[^/.]+$/, ""),
-        artist: "Local File",
-        artists: "Local File",
-        cover: "https://i.scdn.co/image/ab67616d00004851e8fccada5b6f6b8e9547c061",
-        img: "https://i.scdn.co/image/ab67616d00004851e8fccada5b6f6b8e9547c061",
-        url: objectUrl,
-        src: objectUrl
-      });
-    }
-  };
-
   return null;
   
 }

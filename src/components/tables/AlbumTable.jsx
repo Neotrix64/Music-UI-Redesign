@@ -23,13 +23,33 @@ import useAlbumStore from "../../store/useAlbumStore";
 import { THEME } from "./utils/theme";
 import { useTheme } from "@table-library/react-table-library/theme";
 
+// Definimos estilos CSS personalizados para el hover y la selección
+const customStyles = `
+  .table-row {
+    transition: background-color 0.2s ease;
+  }
+  
+  .table-row:hover {
+    background-color: rgba(255, 255, 255, 0.07) !important;
+  }
+  
+  .table-row.selected {
+    background-color: rgba(75, 75, 75, 0.5) !important;
+  }
+  
+  .table-row.selected:hover {
+    background-color: rgba(85, 85, 85, 0.6) !important;
+  }
+`;
+
 function AlbumTable() {
   const selectedAlbum = useAlbumStore((state) => state.selectedAlbum);
   const setSelectedAlbum = useAlbumStore((state) => state.setSelectedAlbum);
   const [tableData, setTableData] = useState({ nodes: [] });
   const [songs, setSongs] = useState([]);
-  const setCurrentSong = useSongStore((state) => state.setCurrentSong)
-  
+  const setCurrentSong = useSongStore((state) => state.setCurrentSong);
+  // Estado para mantener control sobre la fila seleccionada
+  const [selectedRowId, setSelectedRowId] = useState(null);
 
   useEffect(() => {
     if (selectedAlbum && selectedAlbum.idSongs) {
@@ -54,7 +74,20 @@ function AlbumTable() {
   }, [selectedAlbum]);
 
   const theme = useTheme(THEME);
-  const select = useRowSelect(tableData, {}, {});
+  const select = useRowSelect(tableData, {
+    state: { 
+      single: true // Para asegurarnos que solo se puede seleccionar una canción a la vez
+    }
+  }, {
+    onChange: (options) => {
+      // Actualizar nuestro estado local cuando cambia la selección
+      if (options.state.ids && options.state.ids.length > 0) {
+        setSelectedRowId(options.state.ids[0]);
+      } else {
+        setSelectedRowId(null);
+      }
+    }
+  });
 
   const formatDuration = (dateString) => {
     const minutes = Math.floor(Math.random() * 3) + 2; // Entre 2-4 minutos
@@ -76,6 +109,7 @@ function AlbumTable() {
   const handleSongDoubleClick = (song) => {
     // Seleccionar la fila en la tabla
     select.fns.onToggleById(song.id);
+    setSelectedRowId(song.id);
     
     console.log("Doble clic en canción:", song);
 
@@ -85,19 +119,19 @@ function AlbumTable() {
     if (song.originalSong) {
       console.log("Canción original:", song.originalSong);
     }
-    
-    
-    // if (selectedAlbum) {
-    //   const updatedAlbum = {
-    //     ...selectedAlbum,
-    //     currentSongId: song.id
-    //   };
-    //   setSelectedAlbum(updatedAlbum);
-    // }
+  };
+
+  // Añadimos un handler para el clic simple
+  const handleSongClick = (song) => {
+    select.fns.onToggleById(song.id);
+    setSelectedRowId(song.id);
   };
 
   return (
     <div className="mt-8">
+      {/* Inyectamos los estilos CSS personalizados */}
+      <style>{customStyles}</style>
+      
       <h3 className="text-2xl font-bold -mt-10 mb-4">Full Album</h3>
       <Table data={tableData} theme={theme} select={select} layout={{ fixedHeader: true }}>
         {(tableList) => (
@@ -117,8 +151,9 @@ function AlbumTable() {
                 <Row 
                   key={item.id} 
                   item={item} 
+                  onClick={() => handleSongClick(item)}
                   onDoubleClick={() => handleSongDoubleClick(item)} 
-                  className={select.state.ids.includes(item.id) ? "bg-gray-800" : ""}
+                  className={`table-row ${selectedRowId === item.id ? 'selected' : ''}`}
                 >
                   <Cell className="text-white/50">{index + 1}</Cell>
                   <Cell>
