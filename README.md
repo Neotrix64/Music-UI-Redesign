@@ -1,13 +1,12 @@
-# 🎵 Spotify Frontend Rediseñado (Estado: En Proceso)
+# 🎵 Streaming Music UI Redesign (Inspired by Spotify)
 
 ![image](https://github.com/user-attachments/assets/048a454a-dfbe-4cee-9bca-ebb51a534d9b)
 
 
+Este proyecto es una interfaz de usuario totalmente rediseñada inspirada en el servicio de streaming de música, creada con **React**, **Tailwind CSS**, y **Axios**.
+Se conecta a un backend personalizado para proporcionar una experiencia musical moderna, rápida y responsiva.
 
-Este proyecto es una interfaz de usuario totalmente rediseñada de Spotify, creada con **React**, **Tailwind CSS**, y **Axios**.  
-Se conecta a un backend personalizado y proporciona una experiencia musical moderna, rápida y responsiva.
-
-> ⚠️ Este proyecto es parte de un portafolio personal y no tiene fines comerciales.
+> ⚠️ Este proyecto es parte de un portafolio personal y no tiene fines comerciales. No está asociado con Spotify de ninguna manera.
 
 ## 🚀 Tabla de Contenidos
 
@@ -22,11 +21,11 @@ Se conecta a un backend personalizado y proporciona una experiencia musical mode
 
 ## 🎯 Descripción del Proyecto
 
-Este frontend replica y moderniza la experiencia de usuario de Spotify.  
+Este frontend replica y moderniza la experiencia de usuario de una plataforma de música en streaming.
 Incluye páginas de inicio, exploración, álbumes, artistas, y reproducción de canciones, con una navegación suave y diseño inspirado en la estética actual de plataformas musicales.
 
-Está construido con **React** sin usar Vite como empaquetador.  
-Utiliza **Axios** para consumir las rutas del backend, y **Tailwind CSS** para un diseño atractivo, limpio y responsivo.
+Está construido con **React** sin usar Vite como empaquetador.
+Utiliza **Axios** para consumir las rutas del backend, y Tailwind CSS para un diseño atractivo, limpio y responsivo.
 
 ## 🛠️ Tecnologías Utilizadas
 
