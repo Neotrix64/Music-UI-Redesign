@@ -30,3 +30,12 @@ export const getTypeSongs = async (type) =>{
     console.error("Hubo un error"+error)
   }
 }
+
+export const getLibrary = async () =>{
+  try{
+    const response = await axios.get(`${apiUrl}/Playlist/get/all`);
+    return response.data;
+  } catch (error){
+    console.error("Error"+ error);
+  }
+}

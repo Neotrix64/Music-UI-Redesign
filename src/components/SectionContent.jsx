@@ -4,6 +4,7 @@ import Home from "./sections/Home";
 import ArtistProfile from "./sections/ArtistProfile";
 import AlbumSection from "./sections/AlbumSection";
 import SearchSection from "./sections/SearchSection";
+import PlaylistSection from "./sections/PlaylistSection"
 
 function SectionContent() {
   const { section } = useSection();
@@ -13,6 +14,7 @@ function SectionContent() {
     profile: <ArtistProfile />,
     myProfile: <MyProfile />,
     album: <AlbumSection />,
+    playlist: <PlaylistSection/>,
     SearchSection: <SearchSection />,
   };
 

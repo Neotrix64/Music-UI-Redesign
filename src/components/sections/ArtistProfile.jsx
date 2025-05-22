@@ -1,6 +1,7 @@
 import useArtistStore from "../../store/useAppStore";
 import ProfileSongs from "../ArtistProfile/ProfileSongs";
 import useProfileStore from "../../store/useProfileFilter";
+import Popular from "../subComponents/artist/Popular";
 
 function ArtistProfile() {
   const { selectedArtist } = useArtistStore();
@@ -106,6 +107,18 @@ function ArtistProfile() {
                   })}
                 </ul>
               </h1>
+
+
+
+                  {useProfileFilter === "popular" && <Popular/>}
+
+
+
+
+
+
+
+
             </div>
           </div>
         </>

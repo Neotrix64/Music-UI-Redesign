@@ -27,6 +27,8 @@ function Home() {
     setSection("album");
   };
 
+
+
   const handleAlbumChange = (album) => {
     setSelectedAlbum(album);
     setTimeout(() => {

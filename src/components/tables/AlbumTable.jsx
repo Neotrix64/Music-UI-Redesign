@@ -19,6 +19,8 @@ import useSongStore from "../../store/useSongStore"
 
 import { useEffect, useState } from "react";
 import useAlbumStore from "../../store/useAlbumStore";
+import usePlaylistStore from "../../store/usePlaylistStore";
+import { useSection } from "../Contexts/HomeContext";
 
 import { THEME } from "./utils/theme";
 import { useTheme } from "@table-library/react-table-library/theme";
@@ -43,35 +45,72 @@ const customStyles = `
 `;
 
 function AlbumTable() {
+  const { section } = useSection();
+  
+  // Album store
   const selectedAlbum = useAlbumStore((state) => state.selectedAlbum);
-  const setSelectedAlbum = useAlbumStore((state) => state.setSelectedAlbum);
+  
+  // Playlist store
+  const selectedPlaylist = usePlaylistStore((state) => state.selectedPlaylist);
+  
   const [tableData, setTableData] = useState({ nodes: [] });
   const [songs, setSongs] = useState([]);
   const setCurrentSong = useSongStore((state) => state.setCurrentSong);
+  
   // Estado para mantener control sobre la fila seleccionada
   const [selectedRowId, setSelectedRowId] = useState(null);
 
-  useEffect(() => {
-    if (selectedAlbum && selectedAlbum.idSongs) {
-      setSongs(selectedAlbum.idSongs);
+  // Determinar si estamos en modo álbum o playlist
+  const isAlbumMode = section === 'album';
+  const isPlaylistMode = section === 'playlist';
+  
+  // Obtener los datos actuales según el modo
+  const currentData = isAlbumMode ? selectedAlbum : selectedPlaylist;
+  const currentSongs = currentData?.idSongs || [];
 
-      const portada = selectedAlbum.albumCover;
-      
-      const formattedSongs = selectedAlbum.idSongs.map((song, index) => ({
-        id: song._id,
-        name: song.name,
-        img: portada,
-        type: song.type,
-        artist: selectedAlbum.idArtist ? selectedAlbum.idArtist.name : "Unknown Artist",
-        url: song.url,
-        isComplete: Math.random() > 0.5,
-        duration: "4:00",
-        originalSong: song
-      }));
+  useEffect(() => {
+    if (currentData && currentSongs.length > 0) {
+      setSongs(currentSongs);
+
+      let formattedSongs;
+
+      if (isAlbumMode) {
+        // Formateo para álbum
+        const albumCover = selectedAlbum.albumCover;
+        formattedSongs = currentSongs.map((song, index) => ({
+          id: song._id,
+          name: song.name,
+          img: albumCover,
+          type: song.type,
+          artist: selectedAlbum.idArtist ? selectedAlbum.idArtist.name : "Unknown Artist",
+          url: song.url,
+          isComplete: Math.random() > 0.5,
+          duration: "4:00",
+          originalSong: song
+        }));
+      } else {
+        // Formateo para playlist
+        formattedSongs = currentSongs.map((song, index) => ({
+          id: song._id,
+          name: song.name,
+          img: song.albumCover || selectedPlaylist.albumCover || "/default-song.jpg",
+          type: song.type,
+          artist: song.idArtist ? 
+            (Array.isArray(song.idArtist) ? song.idArtist[0]?.name : song.idArtist.name) 
+            : "Unknown Artist",
+          album: song.idAlbum?.name || "Single",
+          url: song.url,
+          isComplete: Math.random() > 0.5,
+          duration: "4:00",
+          originalSong: song
+        }));
+      }
       
       setTableData({ nodes: formattedSongs });
+    } else {
+      setTableData({ nodes: [] });
     }
-  }, [selectedAlbum]);
+  }, [selectedAlbum, selectedPlaylist, section]);
 
   const theme = useTheme(THEME);
   const select = useRowSelect(tableData, {
@@ -127,12 +166,22 @@ function AlbumTable() {
     setSelectedRowId(song.id);
   };
 
+  // Función para obtener el título dinámicamente
+  const getTableTitle = () => {
+    if (isAlbumMode) {
+      return "Full Album";
+    } else if (isPlaylistMode) {
+      return "Playlist Songs";
+    }
+    return "Songs";
+  };
+
   return (
     <div className="mt-8">
       {/* Inyectamos los estilos CSS personalizados */}
       <style>{customStyles}</style>
       
-      <h3 className="text-2xl font-bold -mt-10 mb-4">Full Album</h3>
+      <h3 className="text-2xl font-bold -mt-10 mb-4">{getTableTitle()}</h3>
       <Table data={tableData} theme={theme} select={select} layout={{ fixedHeader: true }}>
         {(tableList) => (
           <>
@@ -140,6 +189,7 @@ function AlbumTable() {
               <HeaderRow>
                 <HeaderCell resize>#</HeaderCell>
                 <HeaderCell resize>Title</HeaderCell>
+                {isPlaylistMode && <HeaderCell resize>Album</HeaderCell>}
                 <HeaderCell resize>Genre</HeaderCell>
                 <HeaderCell resize>Popular</HeaderCell>
                 <HeaderCell resize>Duration</HeaderCell>
@@ -171,6 +221,11 @@ function AlbumTable() {
                       </div>
                     </div>
                   </Cell>
+                  {isPlaylistMode && (
+                    <Cell>
+                      <span className="text-white/70">{item.album}</span>
+                    </Cell>
+                  )}
                   <Cell>{item.type}</Cell>
                   <Cell>{formatPopularity(item.isComplete)}</Cell>
                   <Cell>{formatDuration(item.deadline)}</Cell>
