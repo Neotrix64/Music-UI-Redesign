@@ -28,8 +28,8 @@ function SideBar() {
   }, [])
 
   return (
-    <div className="sidebar text-white bg-[#0d0d0d] h-[88vh] w-16 sm:w-20 md:w-24 xl:w-1/4 rounded-lg mx-2 p-2 sm:p-3 md:p-4 flex flex-col justify-between overflow-y-auto scrollbar-hide ease-in-out duration-500">
-      <div className="w-full">
+    <div className="sidebar text-white bg-[#0d0d0d] h-[88vh] w-16 sm:w-20 md:w-24 xl:w-1/4 rounded-lg mx-2 p-2 sm:p-3 md:p-4 flex flex-col justify-between overflow-y-auto scrollbar-hide ease-in-out duration-500 ">
+      <div className="w-full pb-24">
         <nav className="mb-4 md:mb-6">
           <ul className="space-y-2 md:space-y-4 w-full">
             <li className="flex w-full items-center justify-center sm:justify-start gap-1 md:gap-3 hover:text-green-500 cursor-pointer transition-colors">

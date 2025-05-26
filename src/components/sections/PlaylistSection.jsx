@@ -63,9 +63,9 @@ function PlaylistSection() {
             className="absolute w-full h-full object-cover"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-[#181818]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-[#0d0d0d]"></div>
 
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#181818] to-transparent"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0d0d0d] to-transparent"></div>
 
           <div className="absolute bottom-12 left-6 right-6 z-10">
             <div className="flex flex-col max-w-2xl">
@@ -171,7 +171,7 @@ function PlaylistSection() {
           </div>
         </div>
 
-        <div className="content-section bg-gradient-to-b from-[#181818] to-[#121212] min-h-[500px] px-6 pb-96">
+        <div className="content-section bg-gradient-to-b from-[#0d0d0d] to-[#0d0d0d] min-h-[500px] px-6 pb-96">
           <UniversalTable />
 
           <div className="flex gap-10">

@@ -1,5 +1,7 @@
 import { Play, Pause, SkipBack, SkipForward, Heart, Volume2, Maximize2 } from "lucide-react";
 import useAudioPlayer from "../utils/useMusicPlayer";
+import { useEffect } from "react";
+
 
 function MusicFooter() {
   const {

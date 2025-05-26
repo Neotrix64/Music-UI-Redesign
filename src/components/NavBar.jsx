@@ -35,12 +35,7 @@ function NavBar() {
   return (
     <nav className="flex justify-center items-center text-white lg:p-4 pb-14 bg-[#000] rounded-b-xl  ">
       <div className="logo flex absolute left-5 text-xl items-center">
-        <img
-          draggable="false"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/1280px-Spotify_logo_with_text.svg.png"
-          alt=""
-          className="h-10"
-        />
+       {/*Aqui va un logo o algo*/}
       </div>
       <div className="searchBar lg:flex hidden gap-5 text-white">
         <div className="innerImg flex items-center relative group">

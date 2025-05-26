@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import useSongStore from "../store/useSongStore";
 import useAlbumStore from "../store/useAlbumStore";
+import usePlayingPlaylistStore from "../store/usePlayingPlaylistStore";
 
 const useAudioPlayer = () => {
   const audioRef = useRef(null);
@@ -9,26 +10,40 @@ const useAudioPlayer = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [volume, setVolume] = useState(100);
   const [duration, setDuration] = useState(0);
+  const [playlist, setPlaylist] = useState([]);
   
-  // Zustand store
+  // Zustand stores
   const { currentSong } = useSongStore();
-  const selectedAlbum = useAlbumStore((state) => state.selectedAlbum);
   const setCurrentSong = useSongStore((state) => state.setCurrentSong);
+  const usePlayingMusic = usePlayingPlaylistStore((state) => state.usePlayingPlaylist);
   
   const getPlaylist = () => {
-    if (!selectedAlbum) return [];
-    if (selectedAlbum.idSongs && selectedAlbum.idSongs.length > 0) {
-      //revisa si el primer index tiene un nombre, indicando que el objeto contiene canciones
-      if (typeof selectedAlbum.idSongs[0] === 'object' && selectedAlbum.idSongs[0].name) {
-        return selectedAlbum.idSongs;
+    if (!usePlayingMusic) return [];
+    if (usePlayingMusic.idSongs && usePlayingMusic.idSongs.length > 0) {
+      // Revisa si el primer index tiene un nombre, indicando que el objeto contiene canciones
+      if (typeof usePlayingMusic.idSongs[0] === 'object' && usePlayingMusic.idSongs[0].name) {
+        return usePlayingMusic.idSongs;
       }
     }
-    //si se llega aqui significa que necesita cargar la informacion completa aun
+    // Si se llega aquí significa que necesita cargar la información completa aún
     console.warn("The idSongs array does not contain complete song information");
     return [];
   };
   
-  const playlist = getPlaylist();
+  useEffect(() => {
+    const newPlaylist = getPlaylist();
+    setPlaylist(newPlaylist);
+    setTimeout(() => {
+      console.log("Aquí la playlist registrada: ", newPlaylist);
+    }, 1000);
+  }, [usePlayingMusic]); // Dependencia cambiada a usePlayingMusic
+
+  useEffect(() => {
+    if (isPlaying === true) {
+      console.log("Se está reproduciendo");
+    }
+  }, [isPlaying]);
+
   const isPlayerVisible = currentSong && Object.keys(currentSong).length > 0;
 
   const formatTime = (seconds) => {
@@ -46,16 +61,16 @@ const useAudioPlayer = () => {
       audioRef.current = new Audio();
     }
     
-    // a el audio le damos la url y le ponemos un volumen 
+    // Al audio le damos la url y le ponemos un volumen 
     audioRef.current.src = currentSong.url;
     audioRef.current.volume = volume / 100;
     
-    // Obtenemos la duracion desde la metadata
+    // Obtenemos la duración desde la metadata
     audioRef.current.addEventListener('loadedmetadata', () => {
       setDuration(audioRef.current.duration);
     });
     
-    // Actualizamos el tiempo cuando se esta reproduciendo
+    // Actualizamos el tiempo cuando se está reproduciendo
     const updateTime = () => {
       setCurrentTime(audioRef.current.currentTime);
     };
@@ -79,7 +94,7 @@ const useAudioPlayer = () => {
   useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
-        //reproducimos la instancia de audio
+        // Reproducimos la instancia de audio
         const playPromise = audioRef.current.play();
         
         if (playPromise !== undefined) {
@@ -188,8 +203,9 @@ const useAudioPlayer = () => {
     if (currentSong.artist) return currentSong.artist;
     if (currentSong.artists) return currentSong.artists;
     
-    if (selectedAlbum && selectedAlbum.idArtist && selectedAlbum.idArtist.name) {
-      return selectedAlbum.idArtist.name;
+    // Cambiado para usar usePlayingMusic en lugar de selectedAlbum
+    if (usePlayingMusic && usePlayingMusic.idArtist && usePlayingMusic.idArtist.name) {
+      return usePlayingMusic.idArtist.name;
     }
     
     return "Unknown Artist";
@@ -200,8 +216,9 @@ const useAudioPlayer = () => {
     if (currentSong.cover) return currentSong.cover;
     if (currentSong.albumCover) return currentSong.albumCover;
     
-    if (selectedAlbum && selectedAlbum.albumCover) {
-      return selectedAlbum.albumCover;
+    // Cambiado para usar usePlayingMusic en lugar de selectedAlbum
+    if (usePlayingMusic && usePlayingMusic.albumCover) {
+      return usePlayingMusic.albumCover;
     }
     
     return "/default-cover.jpg";
@@ -212,7 +229,7 @@ const useAudioPlayer = () => {
       audioRef.current.pause();
     }
     setCurrentSong(song);
-    setTimeout(() => setIsPlaying(true), 300);
+    setTimeout(() => setIsPlaying(true), 500);
   };
 
   return {

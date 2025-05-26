@@ -3,7 +3,12 @@ const plugin = require('tailwindcss/plugin');
 module.exports = {
   content: ["./src/**/*.{html,js,jsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'poppins': ['Poppins', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+      },
+    },
   },
   plugins: [
     require('tailwind-scrollbar'),
