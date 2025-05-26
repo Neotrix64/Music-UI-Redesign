@@ -16,6 +16,7 @@ import {
   SelectTypes,
 } from "@table-library/react-table-library/select";
 import useSongStore from "../../store/useSongStore"
+import usePlayingPlaylistStore from "../../store/usePlayingPlaylistStore";
 
 import { useEffect, useState } from "react";
 import useAlbumStore from "../../store/useAlbumStore";
@@ -25,7 +26,6 @@ import { useSection } from "../Contexts/HomeContext";
 import { THEME } from "./utils/theme";
 import { useTheme } from "@table-library/react-table-library/theme";
 
-// Definimos estilos CSS personalizados para el hover y la selección
 const customStyles = `
   .table-row {
     transition: background-color 0.2s ease;
@@ -47,11 +47,15 @@ const customStyles = `
 function AlbumTable() {
   const { section } = useSection();
   
-  // Album store
+  // Album store (solo para visualización de la página)
   const selectedAlbum = useAlbumStore((state) => state.selectedAlbum);
   
   // Playlist store
   const selectedPlaylist = usePlaylistStore((state) => state.selectedPlaylist);
+  
+  // Playing playlist store (para el reproductor)
+  const usePlayingMusic = usePlayingPlaylistStore((state) => state.usePlayingPlaylist);
+  const setUsePlayingMusic = usePlayingPlaylistStore((state) => state.setPlayingPlaylist);
   
   const [tableData, setTableData] = useState({ nodes: [] });
   const [songs, setSongs] = useState([]);
@@ -115,7 +119,7 @@ function AlbumTable() {
   const theme = useTheme(THEME);
   const select = useRowSelect(tableData, {
     state: { 
-      single: true // Para asegurarnos que solo se puede seleccionar una canción a la vez
+      single: true
     }
   }, {
     onChange: (options) => {
@@ -152,9 +156,16 @@ function AlbumTable() {
     
     console.log("Doble clic en canción:", song);
 
+    // Establecer la playlist actual en el reproductor ANTES de setear la canción
+    if (currentData && currentData !== usePlayingMusic) {
+      console.log("Actualizando playlist del reproductor:", currentData);
+      setUsePlayingMusic(currentData);
+    }
+
+    // Ahora establecer la canción actual
     setCurrentSong(song);
     
-    // Para acceder a la cancion original de la api
+    // Para acceder a la canción original de la api
     if (song.originalSong) {
       console.log("Canción original:", song.originalSong);
     }
