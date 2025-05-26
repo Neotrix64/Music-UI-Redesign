@@ -99,7 +99,7 @@ function AlbumTable() {
           name: song.name,
           img: song.albumCover || selectedPlaylist.albumCover || "/default-song.jpg",
           type: song.type,
-          artist: song.idArtist ? 
+          artist:  song.idArtist ? 
             (Array.isArray(song.idArtist) ? song.idArtist[0]?.name : song.idArtist.name) 
             : "Unknown Artist",
           album: song.idAlbum?.name || "Single",

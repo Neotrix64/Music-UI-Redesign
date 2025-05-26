@@ -11,25 +11,32 @@ const useAudioPlayer = () => {
   const [volume, setVolume] = useState(100);
   const [duration, setDuration] = useState(0);
   const [playlist, setPlaylist] = useState([]);
-  
+  const uri = process.env.REACT_APP_CLOUDINARY_URL;
   // Zustand stores
   const { currentSong } = useSongStore();
   const setCurrentSong = useSongStore((state) => state.setCurrentSong);
-  const usePlayingMusic = usePlayingPlaylistStore((state) => state.usePlayingPlaylist);
-  
+  const usePlayingMusic = usePlayingPlaylistStore(
+    (state) => state.usePlayingPlaylist
+  );
+
   const getPlaylist = () => {
     if (!usePlayingMusic) return [];
     if (usePlayingMusic.idSongs && usePlayingMusic.idSongs.length > 0) {
       // Revisa si el primer index tiene un nombre, indicando que el objeto contiene canciones
-      if (typeof usePlayingMusic.idSongs[0] === 'object' && usePlayingMusic.idSongs[0].name) {
+      if (
+        typeof usePlayingMusic.idSongs[0] === "object" &&
+        usePlayingMusic.idSongs[0].name
+      ) {
         return usePlayingMusic.idSongs;
       }
     }
     // Si se llega aquí significa que necesita cargar la información completa aún
-    console.warn("The idSongs array does not contain complete song information");
+    console.warn(
+      "The idSongs array does not contain complete song information"
+    );
     return [];
   };
-  
+
   useEffect(() => {
     const newPlaylist = getPlaylist();
     setPlaylist(newPlaylist);
@@ -50,7 +57,7 @@ const useAudioPlayer = () => {
     if (isNaN(seconds) || seconds === Infinity) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   useEffect(() => {
@@ -60,49 +67,56 @@ const useAudioPlayer = () => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
     }
-    
-    // Al audio le damos la url y le ponemos un volumen 
-    audioRef.current.src = currentSong.url;
+
+    // Al audio le damos la url y le ponemos un volumen
+
+    if (!uri) {
+      console.error("Cloudinary base URL no configurada.");
+    }
+
+    console.log(currentSong.id)
+
+    audioRef.current.src = uri + currentSong.url;
     audioRef.current.volume = volume / 100;
-    
+
     // Obtenemos la duración desde la metadata
-    audioRef.current.addEventListener('loadedmetadata', () => {
+    audioRef.current.addEventListener("loadedmetadata", () => {
       setDuration(audioRef.current.duration);
     });
-    
+
     // Actualizamos el tiempo cuando se está reproduciendo
     const updateTime = () => {
       setCurrentTime(audioRef.current.currentTime);
     };
-    
+
     const handleEnded = () => {
       playNextSong();
     };
-    
-    audioRef.current.addEventListener('timeupdate', updateTime);
-    audioRef.current.addEventListener('ended', handleEnded);
-    
+
+    audioRef.current.addEventListener("timeupdate", updateTime);
+    audioRef.current.addEventListener("ended", handleEnded);
+
     return () => {
       if (audioRef.current) {
-        audioRef.current.removeEventListener('timeupdate', updateTime);
-        audioRef.current.removeEventListener('ended', handleEnded);
+        audioRef.current.removeEventListener("timeupdate", updateTime);
+        audioRef.current.removeEventListener("ended", handleEnded);
       }
     };
   }, [currentSong]);
-  
+
   // Control play/pause
   useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
         // Reproducimos la instancia de audio
         const playPromise = audioRef.current.play();
-        
+
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
               // Funciona correctamente
             })
-            .catch(error => {
+            .catch((error) => {
               console.error("Error playing:", error);
               setIsPlaying(false);
             });
@@ -114,7 +128,7 @@ const useAudioPlayer = () => {
       }
     }
   }, [isPlaying]);
-  
+
   // Actualizar volumen solo cuando cambie el valor de volume
   useEffect(() => {
     if (audioRef.current) {
@@ -144,56 +158,56 @@ const useAudioPlayer = () => {
 
   const getCurrentSongIndex = () => {
     if (!playlist || !playlist.length || !currentSong) return -1;
-    
+
     if (currentSong._id) {
-      const index = playlist.findIndex(song => song._id === currentSong._id);
+      const index = playlist.findIndex((song) => song._id === currentSong._id);
       if (index !== -1) return index;
     }
-    
-    return playlist.findIndex(song => song.name === currentSong.name);
+
+    return playlist.findIndex((song) => song.name === currentSong.name);
   };
-  
+
   const playPrevSong = () => {
     if (!playlist || playlist.length === 0) return;
-    
+
     const currentIndex = getCurrentSongIndex();
     if (currentIndex === -1) return;
-    
+
     const prevIndex = currentIndex > 0 ? currentIndex - 1 : playlist.length - 1;
-    
+
     if (audioRef.current) {
       audioRef.current.pause();
     }
-    
+
     setCurrentSong(playlist[prevIndex]);
-    
+
     if (isPlaying) {
       setTimeout(() => {
         if (audioRef.current && audioRef.current.readyState >= 2) {
-          audioRef.current.play().catch(err => console.error(err));
+          audioRef.current.play().catch((err) => console.error(err));
         }
       }, 300);
     }
   };
-  
+
   const playNextSong = () => {
     if (!playlist || playlist.length === 0) return;
-    
+
     const currentIndex = getCurrentSongIndex();
     if (currentIndex === -1) return;
-    
+
     const nextIndex = (currentIndex + 1) % playlist.length;
-    
+
     if (audioRef.current) {
       audioRef.current.pause();
     }
-    
+
     setCurrentSong(playlist[nextIndex]);
-    
+
     if (isPlaying) {
       setTimeout(() => {
         if (audioRef.current && audioRef.current.readyState >= 2) {
-          audioRef.current.play().catch(err => console.error(err));
+          audioRef.current.play().catch((err) => console.error(err));
         }
       }, 300);
     }
@@ -202,12 +216,16 @@ const useAudioPlayer = () => {
   const getArtistInfo = () => {
     if (currentSong.artist) return currentSong.artist;
     if (currentSong.artists) return currentSong.artists;
-    
+
     // Cambiado para usar usePlayingMusic en lugar de selectedAlbum
-    if (usePlayingMusic && usePlayingMusic.idArtist && usePlayingMusic.idArtist.name) {
+    if (
+      usePlayingMusic &&
+      usePlayingMusic.idArtist &&
+      usePlayingMusic.idArtist.name
+    ) {
       return usePlayingMusic.idArtist.name;
     }
-    
+
     return "Unknown Artist";
   };
 
@@ -215,12 +233,12 @@ const useAudioPlayer = () => {
     if (currentSong.img) return currentSong.img;
     if (currentSong.cover) return currentSong.cover;
     if (currentSong.albumCover) return currentSong.albumCover;
-    
+
     // Cambiado para usar usePlayingMusic en lugar de selectedAlbum
     if (usePlayingMusic && usePlayingMusic.albumCover) {
       return usePlayingMusic.albumCover;
     }
-    
+
     return "/default-cover.jpg";
   };
 
@@ -228,6 +246,7 @@ const useAudioPlayer = () => {
     if (audioRef.current) {
       audioRef.current.pause();
     }
+    console.log(song);
     setCurrentSong(song);
     setTimeout(() => setIsPlaying(true), 500);
   };
@@ -251,7 +270,7 @@ const useAudioPlayer = () => {
     playNextSong,
     getArtistInfo,
     getAlbumCover,
-    loadSong
+    loadSong,
   };
 };
 
