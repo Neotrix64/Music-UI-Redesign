@@ -3,6 +3,7 @@ import search from "../Icons/busqueda (1).png";
 import constants from "./consts/globalConstants";
 import { useSection } from "./Contexts/HomeContext";
 import { House } from "lucide-react";
+import useSearchStore from "../store/useSearchStore";
 
 function NavBar() {
   const getRandomPlaceHolder = () => {
@@ -11,10 +12,11 @@ function NavBar() {
     return placeholders[randomIndex];
   };
 
-  const [useNav, setNavText] = useState("");
+  const useSearch = useSearchStore((state) => state.useSearch)
+  const setSearch = useSearchStore((state) => state.setSearch)
 
   const handleChangeNav = (event) => {
-    setNavText(event.target.value);
+    setSearch(event.target.value);
   };
 
   const { setSection, section } = useSection();
@@ -25,12 +27,12 @@ function NavBar() {
 
   useEffect(() => {
     // Solo se ejecuta cuando useNav cambia y no está vacío
-    if (useNav.length > 0) {
+    if (useSearch.length > 0) {
       setSection("SearchSection");
     } else if(section === "SearchSection") {
       setSection("home"); //EN VEZ DE HOME DEBO PONER UNA SECCION DE BROWSE
     }
-  }, [useNav]); // El efecto se ejecuta cuando useNav cambia
+  }, [useSearch]); // El efecto se ejecuta cuando useNav cambia
 
   return (
     <nav className="flex justify-center items-center text-white lg:p-4 pb-14 bg-[#000] rounded-b-xl  ">
@@ -56,7 +58,7 @@ function NavBar() {
         <input
           type="text"
           className="rounded-3xl pl-12 w-[500px] pr-5 bg-white/10 tracking-wider hover:bg-white/20 ease-in-out duration-700 focus:bg-white/20 placeholder:text-white/50 border-[1px] border-transparent hover:border-white/20"
-          value={useNav}
+          value={useSearch}
           onChange={handleChangeNav}
           placeholder={getRandomPlaceHolder()}
         />

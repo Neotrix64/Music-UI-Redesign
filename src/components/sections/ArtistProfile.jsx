@@ -81,8 +81,8 @@ function ArtistProfile() {
               </div>
             </div>
           </div>
-          <div className="banner w-full bg-gradient-to-b from-[#222222] to-[#121212] h-full shadow-2xl shadow-black">
-            <div className="content">
+          <div className="banner w-full bg-gradient-to-b from-[#222222] to-[#121212] shadow-2xl shadow-black pb-96 ">
+            <div className="content h-fit">
               <h1 className="pt-5 pl-3 flex justify-center text-lg font-semibold tracking-wide">
                 <ul className="flex gap-3 text-white/50">
                   {filtros.map((filtro, index) => {
@@ -109,8 +109,8 @@ function ArtistProfile() {
               </h1>
 
 
-
-                  {useProfileFilter === "popular" && <Popular/>}
+                  
+                  {useProfileFilter === "popular" && <Popular artist={selectedArtist}/>}
 
 
 

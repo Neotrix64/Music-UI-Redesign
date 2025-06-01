@@ -1,6 +1,7 @@
 import { Play, Pause, SkipBack, SkipForward, Heart, Volume2, Maximize2 } from "lucide-react";
 import useAudioPlayer from "../utils/useMusicPlayer";
 import { useEffect } from "react";
+import toggleFullScreen from "../utils/useFullScreen";
 
 
 function MusicFooter() {
@@ -27,6 +28,10 @@ function MusicFooter() {
 
   // If no current song, don't render the component
   if (!isPlayerVisible) return null;
+
+  const handleFullScreen = () =>{
+    toggleFullScreen()
+  }
 
   return (
     <aside className="fixed bottom-0 left-0 right-0 w-full px-6 py-4 text-white bg-black rounded-t-xl shadow-lg z-50 flex justify-between items-center">
@@ -134,7 +139,7 @@ function MusicFooter() {
             />
           </div>
         </div>
-        <button className="p-2 rounded-full hover:bg-gray-800 transition-colors">
+        <button onClick={() => handleFullScreen()} className="p-2 rounded-full hover:bg-gray-800 transition-colors">
           <Maximize2 size={18} />
         </button>
       </div>

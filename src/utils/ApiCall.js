@@ -39,3 +39,30 @@ export const getLibrary = async () =>{
     console.error("Error"+ error);
   }
 }
+
+export const getSearch = async (busqueda) =>{
+  try{
+    const response = await axios.get(`${apiUrl}/busqueda/`);
+    let respuestaFiltrada = {};
+    const albums = response.data.albums
+    const song = response.data.song
+    const artista = response.data.artistas
+
+    const filtroAlbum = albums.filter((album) => album.name.toLowerCase().includes(busqueda)).slice(0,2) || " no results"
+    const filtroSong = song.filter((song) => song.name.toLowerCase().includes(busqueda)).slice(0,2)
+    const filtroArtista = artista.filter((artista) => artista.name.toLowerCase().includes(busqueda)).slice(0,2)
+
+    respuestaFiltrada = {
+      filtroAlbum,
+      filtroSong,
+      filtroArtista
+    }
+   
+
+
+    console.log(respuestaFiltrada)
+    return respuestaFiltrada;
+  } catch(error){
+    console.error("error"+error)
+  }
+}

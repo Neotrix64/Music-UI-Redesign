@@ -40,11 +40,8 @@ function Home() {
     setCurrentSong(album.idSongs[0])
     setSelectedAlbum(album);
     setPlayingPlaylist(album)
+    console.log(album)
   }
-
-  useEffect(() =>{
-    console.log(usePlayingMusic)
-  }, [usePlayingMusic])
 
   const handleAlbumChange = (album) => {
     setSelectedAlbum(album);
@@ -138,6 +135,7 @@ function Home() {
                         onClick={(e) => {
                           e.stopPropagation();
                           handleChange(album.idArtist);
+                          console.log(album)
                           handleSectionProfile();
                         }}
                       >
