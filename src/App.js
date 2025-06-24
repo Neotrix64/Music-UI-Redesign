@@ -2,9 +2,7 @@ import "./input.css";
 import NavBar from "./components/NavBar";
 import MiddlePageInfo from "./components/MiddlePageInfo";
 import MusicFooter from "./components/MusicFooter"
-import Theme from './pages/Theme'
 import { HomeSectionProvider } from "./components/Contexts/HomeContext";
-import MusicBars from "./components/subComponents/MusicBarsIcon";
 
 function App() {
   return (

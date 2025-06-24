@@ -1,6 +1,5 @@
 import { Play, Pause, SkipBack, SkipForward, Heart, Volume2, Maximize2 } from "lucide-react";
 import useAudioPlayer from "../utils/useMusicPlayer";
-import { useEffect } from "react";
 import toggleFullScreen from "../utils/useFullScreen";
 import useArtistStore from "../store/useAppStore";
 import { useSection } from "./Contexts/HomeContext";
@@ -10,7 +9,7 @@ import { getArtInfo } from "../utils/ApiCall";
 function MusicFooter() {
 
   const { setArtist } = useArtistStore();
-  const { setSection, section } = useSection();
+  const { setSection } = useSection();
 
   const {
     currentTime,

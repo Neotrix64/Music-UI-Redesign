@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import search from "../Icons/busqueda (1).png";
 import constants from "./consts/globalConstants";
 import { useSection } from "./Contexts/HomeContext";

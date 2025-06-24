@@ -6,7 +6,6 @@ import UniversalTable from "../tables/AlbumTable";
 
 function PlaylistSection() {
   const selectedPlaylist = usePlaylistStore((state) => state.selectedPlaylist);
-  const setSelectedPlaylist = usePlaylistStore((state) => state.setSelectedPlaylist);
   const [isLoading, setIsLoading] = useState(false);
 
   // Efecto para manejar el loading cuando cambia la playlist seleccionada
@@ -15,13 +14,6 @@ function PlaylistSection() {
       setIsLoading(false);
     }
   }, [selectedPlaylist]);
-
-  // Función para simular carga (puedes reemplazar esto con tu lógica real)
-  const handlePlaylistChange = (playlist) => {
-    setIsLoading(true);
-    setSelectedPlaylist(playlist);
-    // La carga se completará cuando selectedPlaylist cambie
-  };
 
   // Componente de loading
   const LoadingComponent = () => (

@@ -1,5 +1,4 @@
 import useArtistStore from "../../store/useAppStore";
-import ProfileSongs from "../ArtistProfile/ProfileSongs";
 import useProfileStore from "../../store/useProfileFilter";
 import Popular from "../subComponents/artist/Popular";
 

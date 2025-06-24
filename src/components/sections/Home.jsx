@@ -4,17 +4,15 @@ import useArtistStore from "../../store/useAppStore";
 import { getAlbums, getRandomSongs, getTypeSongs } from "../../utils/ApiCall";
 import useAlbumStore from "../../store/useAlbumStore";
 import BannerCarousel from "../subComponents/Home/BannerCarousel";
-import useMusicPlayer from "../../utils/useMusicPlayer"
 import useSongStore from "../../store/useSongStore";
 import MadeFor from "../subComponents/Home/MadeFor";
 import DiscoverNewFavorites from "../subComponents/Home/DiscoverNewFavorites"
-import FocusZone from "../subComponents/Home/FocusZone";
 import ThisIs from "../subComponents/Home/ThisIs";
 import usePlayingPlaylistStore from "../../store/usePlayingPlaylistStore";
 
 function Home() {
   const { setArtist } = useArtistStore();
-  const { setSection, section } = useSection();
+  const { setSection } = useSection();
   const [albums, setAlbums] = useState([]);
   const setSelectedAlbum = useAlbumStore((state) => state.setSelectedAlbum);
   const [jumpBackIn, setJumpBackIn] = useState([]);
@@ -22,7 +20,6 @@ function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const { setCurrentSong } = useSongStore();
   const setPlayingPlaylist = usePlayingPlaylistStore((state) => state.setPlayingPlaylist)
-  const usePlayingMusic = usePlayingPlaylistStore((state) => state.usePlayingPlaylist)
 
   const handleChange = (artist) => {
     setArtist(artist);

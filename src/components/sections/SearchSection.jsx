@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Search,
   Music,
@@ -6,8 +6,6 @@ import {
   Users,
   User,
   Play,
-  Heart,
-  MoreHorizontal,
 } from "lucide-react";
 import { getSearch } from "../../utils/ApiCall";
 import useSearchStore from "../../store/useSearchStore";
@@ -89,37 +87,6 @@ function SearchSection() {
   const handleSelect = (index) => {
     setSelected(index);
   };
-
-  const songs = [
-    {
-      id: 1,
-      name: "Blinding Lights",
-      artist: "The Weeknd",
-      album: "After Hours",
-      duration: "3:20",
-    },
-    {
-      id: 2,
-      name: "Save Your Tears",
-      artist: "The Weeknd",
-      album: "After Hours",
-      duration: "3:35",
-    },
-    {
-      id: 3,
-      name: "Can't Feel My Face",
-      artist: "The Weeknd",
-      album: "Beauty Behind The Madness",
-      duration: "3:33",
-    },
-    {
-      id: 4,
-      name: "Starboy",
-      artist: "The Weeknd ft. Daft Punk",
-      album: "Starboy",
-      duration: "3:50",
-    },
-  ];
 
   const albums = [
     {

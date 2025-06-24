@@ -1,4 +1,4 @@
-import { Home, Library, Star, User } from 'lucide-react';
+import { Library, Star, User } from 'lucide-react';
 import { useState, useEffect } from "react";
 import { getLibrary } from '../utils/ApiCall';
 import { useSection } from "./Contexts/HomeContext"
@@ -6,9 +6,8 @@ import usePlaylistStore from '../store/usePlaylistStore';
 
 function SideBar() {
   const [usePlaylist, setPlaylist] = useState([]);
-    const { setSection, section } = useSection();
-      const selectedPlaylist = usePlaylistStore((state) => state.selectedPlaylist);
-      const setSelectedPlaylist = usePlaylistStore((state) => state.setSelectedPlaylist);
+    const { setSection } = useSection();
+    const setSelectedPlaylist = usePlaylistStore((state) => state.setSelectedPlaylist);
     const handleSectionPlaylist = (playlist) => {
         setSelectedPlaylist(playlist);
       setSection("playlist");

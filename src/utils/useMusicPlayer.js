@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import useSongStore from "../store/useSongStore";
-import useAlbumStore from "../store/useAlbumStore";
 import usePlayingPlaylistStore from "../store/usePlayingPlaylistStore";
 
 const useAudioPlayer = () => {

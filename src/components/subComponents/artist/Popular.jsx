@@ -13,15 +13,6 @@ function Popular({artist}) {
   const setSelectedAlbum = useAlbumStore((state) => state.setSelectedAlbum);
     const setPlayingPlaylist = usePlayingPlaylistStore((state) => state.setPlayingPlaylist)
 
-  
-  // Sample data - replace with actual data from your store
-  const popularSongs = [
-    { id: 1, title: "Blinding Lights", artist: selectedArtist?.name || "Artist Name", plays: "2.1B", duration: "3:20" },
-    { id: 2, title: "Save Your Tears", artist: selectedArtist?.name || "Artist Name", plays: "1.8B", duration: "3:35" },
-    { id: 3, title: "After Hours", artist: selectedArtist?.name || "Artist Name", plays: "1.2B", duration: "6:01" },
-    { id: 4, title: "Can't Feel My Face", artist: selectedArtist?.name || "Artist Name", plays: "1.9B", duration: "3:33" },
-    { id: 5, title: "The Hills", artist: selectedArtist?.name || "Artist Name", plays: "1.7B", duration: "4:02" },
-  ];
   useEffect(() =>{
     const fetchInfo = async () =>{
       try{
@@ -33,15 +24,6 @@ function Popular({artist}) {
     }
     fetchInfo();
   }, [selectedArtist])
-
-  const getMonthAbbreviation = (month) => {
-    const months = {
-      'January': 'JAN', 'February': 'FEB', 'March': 'MAR', 'April': 'APR',
-      'May': 'MAY', 'June': 'JUN', 'July': 'JUL', 'August': 'AUG',
-      'September': 'SEP', 'October': 'OCT', 'November': 'NOV', 'December': 'DEC'
-    };
-    return months[month] || month.substring(0, 3).toUpperCase();
-  };
 
   const handlePlaySong = (song) =>{
     console.log(song)

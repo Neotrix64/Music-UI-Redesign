@@ -5,7 +5,6 @@ import AlbumTable from "../tables/AlbumTable";
 
 function AlbumSection() {
   const selectedAlbum = useAlbumStore((state) => state.selectedAlbum);
-  const setSelectedAlbum = useAlbumStore((state) => state.setSelectedAlbum);
   return (
     <div className="text-white bg-[#181818] w-full h-[88vh] rounded-md mr-3 overflow-y-scroll scrollbar-thumb-white/40 scrollbar">
       <div className="relative w-full">
