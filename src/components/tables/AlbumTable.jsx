@@ -89,7 +89,7 @@ function AlbumTable() {
           artist: selectedAlbum.idArtist ? selectedAlbum.idArtist.name : "Unknown Artist",
           url: song.url,
           isComplete: Math.random() > 0.5,
-          duration: "4:00",
+          duration: song.duration || "4:00",
           originalSong: song
         }));
       } else {
@@ -105,7 +105,7 @@ function AlbumTable() {
           album: song.idAlbum?.name || "Single",
           url: song.url,
           isComplete: Math.random() > 0.5,
-          duration: "4:00",
+          duration: song.duration || "4:00",
           originalSong: song
         }));
       }

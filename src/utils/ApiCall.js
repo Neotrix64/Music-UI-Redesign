@@ -66,3 +66,23 @@ export const getSearch = async (busqueda) =>{
     console.error("error"+error)
   }
 }
+
+export const profileInfo = async (artistId) => {
+  try{
+    const response = await axios.get(`${apiUrl}/profile/artist/${artistId}`)
+    console.log(response.data)
+    return response.data;
+
+  } catch ( error ){
+    console.log(error)
+  }
+}
+
+export const getArtInfo = async (artistId) =>{
+  try{
+    const response = await axios.get(`${apiUrl}/Artist/${artistId}`)
+    return response.data;
+  } catch ( error ){
+    console.log(error)
+  }
+}

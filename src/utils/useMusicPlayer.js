@@ -11,7 +11,11 @@ const useAudioPlayer = () => {
   const [volume, setVolume] = useState(100);
   const [duration, setDuration] = useState(0);
   const [playlist, setPlaylist] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [shouldPlayAfterLoad, setShouldPlayAfterLoad] = useState(false);
+  
   const uri = process.env.REACT_APP_CLOUDINARY_URL;
+  
   // Zustand stores
   const { currentSong } = useSongStore();
   const setCurrentSong = useSongStore((state) => state.setCurrentSong);
@@ -43,7 +47,7 @@ const useAudioPlayer = () => {
     setTimeout(() => {
       console.log("Aquí la playlist registrada: ", newPlaylist);
     }, 1000);
-  }, [usePlayingMusic]); // Dependencia cambiada a usePlayingMusic
+  }, [usePlayingMusic]);
 
   useEffect(() => {
     if (isPlaying === true) {
@@ -60,100 +64,73 @@ const useAudioPlayer = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  useEffect(() => {
-    if (!currentSong || !currentSong.url) return;
+  // Función para esperar a que el audio esté listo
+  const waitForAudioReady = () => {
+    return new Promise((resolve, reject) => {
+      if (!audioRef.current) {
+        reject(new Error("Audio element not found"));
+        return;
+      }
 
-    // Creamos un elemento de audio si no existe para procesar el audio
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-    }
+      const audio = audioRef.current;
+      
+      // Si ya está listo, resuelve inmediatamente
+      if (audio.readyState >= 2) {
+        resolve();
+        return;
+      }
 
-    // Al audio le damos la url y le ponemos un volumen
+      let timeoutId;
+      
+      const handleCanPlay = () => {
+        clearTimeout(timeoutId);
+        audio.removeEventListener('canplay', handleCanPlay);
+        audio.removeEventListener('error', handleError);
+        resolve();
+      };
 
-    if (!uri) {
-      console.error("Cloudinary base URL no configurada.");
-    }
+      const handleError = (error) => {
+        clearTimeout(timeoutId);
+        audio.removeEventListener('canplay', handleCanPlay);
+        audio.removeEventListener('error', handleError);
+        reject(error);
+      };
 
-    console.log(currentSong.id)
+      // Timeout de 10 segundos para evitar esperas infinitas
+      timeoutId = setTimeout(() => {
+        audio.removeEventListener('canplay', handleCanPlay);
+        audio.removeEventListener('error', handleError);
+        reject(new Error("Audio loading timeout"));
+      }, 10000);
 
-    audioRef.current.src = uri + currentSong.url;
-    audioRef.current.volume = volume / 100;
-
-    // Obtenemos la duración desde la metadata
-    audioRef.current.addEventListener("loadedmetadata", () => {
-      setDuration(audioRef.current.duration);
+      audio.addEventListener('canplay', handleCanPlay);
+      audio.addEventListener('error', handleError);
     });
+  };
 
-    // Actualizamos el tiempo cuando se está reproduciendo
-    const updateTime = () => {
-      setCurrentTime(audioRef.current.currentTime);
-    };
+  // Función para reproducir con espera
+  const playAudio = async () => {
+    if (!audioRef.current) return;
 
-    const handleEnded = () => {
-      playNextSong();
-    };
-
-    audioRef.current.addEventListener("timeupdate", updateTime);
-    audioRef.current.addEventListener("ended", handleEnded);
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener("timeupdate", updateTime);
-        audioRef.current.removeEventListener("ended", handleEnded);
+    try {
+      setIsLoading(true);
+      await waitForAudioReady();
+      
+      const playPromise = audioRef.current.play();
+      
+      if (playPromise !== undefined) {
+        await playPromise;
+        setIsPlaying(true);
+        setShouldPlayAfterLoad(false);
+        console.log("Audio reproduciendo correctamente");
       }
-    };
-  }, [currentSong]);
-
-  // Control play/pause
-  useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        // Reproducimos la instancia de audio
-        const playPromise = audioRef.current.play();
-
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              // Funciona correctamente
-            })
-            .catch((error) => {
-              console.error("Error playing:", error);
-              setIsPlaying(false);
-            });
-        }
-      } else {
-        if (audioRef.current.readyState >= 2) {
-          audioRef.current.pause();
-        }
-      }
+    } catch (error) {
+      console.error("Error al reproducir:", error);
+      setIsPlaying(false);
+      setShouldPlayAfterLoad(false);
+    } finally {
+      setIsLoading(false);
     }
-  }, [isPlaying]);
-
-  // Actualizar volumen solo cuando cambie el valor de volume
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-    }
-  }, [volume]);
-
-  const handleSliderChange = (e) => {
-    const value = Number(e.target.value);
-    setCurrentTime(value);
-    if (audioRef.current) {
-      audioRef.current.currentTime = value;
-    }
-  };
-
-  const handleVolumeChange = (e) => {
-    setVolume(Number(e.target.value));
-  };
-
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
   };
 
   const getCurrentSongIndex = () => {
@@ -167,6 +144,19 @@ const useAudioPlayer = () => {
     return playlist.findIndex((song) => song.name === currentSong.name);
   };
 
+  const changeSong = async (newSong, shouldAutoPlay = false) => {
+    console.log("Cambiando a canción:", newSong.name);
+    
+    // Pausar audio actual
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    
+    setIsPlaying(false);
+    setShouldPlayAfterLoad(shouldAutoPlay);
+    setCurrentSong(newSong);
+  };
+
   const playPrevSong = () => {
     if (!playlist || playlist.length === 0) return;
 
@@ -174,20 +164,9 @@ const useAudioPlayer = () => {
     if (currentIndex === -1) return;
 
     const prevIndex = currentIndex > 0 ? currentIndex - 1 : playlist.length - 1;
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-
-    setCurrentSong(playlist[prevIndex]);
-
-    if (isPlaying) {
-      setTimeout(() => {
-        if (audioRef.current && audioRef.current.readyState >= 2) {
-          audioRef.current.play().catch((err) => console.error(err));
-        }
-      }, 300);
-    }
+    const wasPlaying = isPlaying;
+    
+    changeSong(playlist[prevIndex], wasPlaying);
   };
 
   const playNextSong = () => {
@@ -197,36 +176,165 @@ const useAudioPlayer = () => {
     if (currentIndex === -1) return;
 
     const nextIndex = (currentIndex + 1) % playlist.length;
+    const wasPlaying = isPlaying;
+    
+    changeSong(playlist[nextIndex], wasPlaying);
+  };
 
+  useEffect(() => {
+    if (!currentSong || !currentSong.url) return;
+
+    // Pausar audio actual si existe
     if (audioRef.current) {
       audioRef.current.pause();
+      setIsPlaying(false);
     }
 
-    setCurrentSong(playlist[nextIndex]);
+    // Creamos un elemento de audio si no existe
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+
+    if (!uri) {
+      console.error("Cloudinary base URL no configurada.");
+      return;
+    }
+
+    console.log("Cargando canción:", currentSong.id);
+    setIsLoading(true);
+
+    // Configurar la nueva fuente
+    audioRef.current.src = uri + currentSong.url;
+    audioRef.current.volume = volume / 100;
+    audioRef.current.currentTime = 0;
+    setCurrentTime(0);
+
+    // Event listeners
+    const handleLoadedMetadata = () => {
+      setDuration(audioRef.current.duration);
+    };
+
+    const handleCanPlay = () => {
+      setIsLoading(false);
+      console.log("Audio listo para reproducir");
+      
+      // Si se marcó para reproducir después de cargar, reproducir ahora
+      if (shouldPlayAfterLoad) {
+        console.log("Reproduciendo automáticamente después de cargar");
+        playAudio();
+      }
+    };
+
+    const updateTime = () => {
+      setCurrentTime(audioRef.current.currentTime);
+    };
+
+    // ARREGLO PRINCIPAL: Cambiar a la siguiente canción automáticamente
+    const handleEnded = () => {
+      console.log("Canción terminada, cambiando a la siguiente automáticamente");
+      
+      if (playlist && playlist.length > 0) {
+        const currentIndex = getCurrentSongIndex();
+        if (currentIndex !== -1) {
+          const nextIndex = (currentIndex + 1) % playlist.length;
+          const nextSong = playlist[nextIndex];
+          
+          console.log(`Cambiando automáticamente a: ${nextSong.name}`);
+          
+          // Cambiar la canción y marcar para reproducir automáticamente
+          // El audio se reproducirá cuando esté listo debido a shouldPlayAfterLoad
+          setShouldPlayAfterLoad(true);
+          setCurrentSong(nextSong);
+        }
+      }
+    };
+
+    const handleError = (error) => {
+      console.error("Error cargando audio:", error);
+      setIsLoading(false);
+      setIsPlaying(false);
+      setShouldPlayAfterLoad(false);
+    };
+
+    // Agregar event listeners
+    audioRef.current.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audioRef.current.addEventListener("canplay", handleCanPlay);
+    audioRef.current.addEventListener("timeupdate", updateTime);
+    audioRef.current.addEventListener("ended", handleEnded);
+    audioRef.current.addEventListener("error", handleError);
+
+    // Cargar el audio
+    audioRef.current.load();
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        audioRef.current.removeEventListener("canplay", handleCanPlay);
+        audioRef.current.removeEventListener("timeupdate", updateTime);
+        audioRef.current.removeEventListener("ended", handleEnded);
+        audioRef.current.removeEventListener("error", handleError);
+      }
+    };
+  }, [currentSong, playlist]); // Agregado playlist como dependencia
+
+  // Control play/pause mejorado
+  useEffect(() => {
+    if (!audioRef.current) return;
 
     if (isPlaying) {
-      setTimeout(() => {
-        if (audioRef.current && audioRef.current.readyState >= 2) {
-          audioRef.current.play().catch((err) => console.error(err));
-        }
-      }, 300);
+      playAudio();
+    } else {
+      audioRef.current.pause();
+      setShouldPlayAfterLoad(false);
     }
+  }, [isPlaying]);
+
+  // Actualizar volumen solo cuando cambie el valor de volume
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume / 100;
+    }
+  }, [volume]);
+
+  const handleSliderChange = (e) => {
+    const value = Number(e.target.value);
+    setCurrentTime(value);
+    if (audioRef.current && audioRef.current.readyState >= 2) {
+      audioRef.current.currentTime = value;
+    }
+  };
+
+  const handleVolumeChange = (e) => {
+    setVolume(Number(e.target.value));
+  };
+
+  const togglePlay = () => {
+    if (isLoading) {
+      // Si está cargando, marcar para reproducir después
+      setShouldPlayAfterLoad(!shouldPlayAfterLoad);
+      return;
+    }
+    
+    setIsPlaying(!isPlaying);
+  };
+
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
   };
 
   const getArtistInfo = () => {
     if (currentSong.artist) return currentSong.artist;
     if (currentSong.artists) return currentSong.artists;
 
-    // Cambiado para usar usePlayingMusic en lugar de selectedAlbum
     if (
       usePlayingMusic &&
       usePlayingMusic.idArtist &&
       usePlayingMusic.idArtist.name
     ) {
-      return usePlayingMusic.idArtist.name;
+      return usePlayingMusic.idArtist.name || usePlayingMusic.idArtist[0].name;
     }
 
-    return "Unknown Artist";
+    return undefined;
   };
 
   const getAlbumCover = () => {
@@ -243,12 +351,8 @@ const useAudioPlayer = () => {
   };
 
   const loadSong = (song) => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    console.log(song);
-    setCurrentSong(song);
-    setTimeout(() => setIsPlaying(true), 500);
+    console.log("Cargando canción:", song);
+    changeSong(song, true);
   };
 
   return {
@@ -261,6 +365,7 @@ const useAudioPlayer = () => {
     currentSong,
     isPlayerVisible,
     playlist,
+    isLoading,
     formatTime,
     handleSliderChange,
     handleVolumeChange,

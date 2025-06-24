@@ -1,6 +1,5 @@
 import React from 'react';
 
-function ThisIs() {
   const gradientColors = [
     "from-purple-600 to-blue-600",
     "from-pink-500 to-rose-500",
@@ -60,6 +59,8 @@ function ThisIs() {
       artist: "Sub urban",
     }
   ];
+
+function ThisIs() {
 
   return (
     <div className="thisIs overflow-x-auto scrollbar-hide">

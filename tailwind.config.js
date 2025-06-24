@@ -8,6 +8,10 @@ module.exports = {
         'poppins': ['Poppins', 'sans-serif'],
         'inter': ['Inter', 'sans-serif'],
       },
+      colors: {
+        'custom-black': '#0d0d0d',
+      },
+
     },
   },
   plugins: [

@@ -2,9 +2,16 @@ import { Play, Pause, SkipBack, SkipForward, Heart, Volume2, Maximize2 } from "l
 import useAudioPlayer from "../utils/useMusicPlayer";
 import { useEffect } from "react";
 import toggleFullScreen from "../utils/useFullScreen";
+import useArtistStore from "../store/useAppStore";
+import { useSection } from "./Contexts/HomeContext";
+import { getArtInfo } from "../utils/ApiCall";
 
 
 function MusicFooter() {
+
+  const { setArtist } = useArtistStore();
+  const { setSection, section } = useSection();
+
   const {
     currentTime,
     isPlaying,
@@ -29,8 +36,25 @@ function MusicFooter() {
   // If no current song, don't render the component
   if (!isPlayerVisible) return null;
 
+
+    const handleGetData = async (artistId) =>{
+      try{
+        console.log("a"+artistId);
+        const res = await getArtInfo(artistId)
+        console.log("b"+res)
+        handleRedirectToProfile(res)
+      } catch (error){
+        console.log("Hubo un error"+ error)
+      }
+    }
+
   const handleFullScreen = () =>{
     toggleFullScreen()
+  }
+
+  const handleRedirectToProfile = (artist) =>{
+    setSection('profile');
+    setArtist(artist);
   }
 
   return (
@@ -57,8 +81,9 @@ function MusicFooter() {
           <p className="font-semibold text-sm md:text-base truncate">
             {currentSong?.name || currentSong?.title || "Unknown Title"}
           </p>
-          <span className="text-gray-400 text-xs md:text-sm truncate hover:text-white cursor-pointer ease-in-out duration-300">
+          <span onClick={() => handleGetData(currentSong.idArtist)} className="text-gray-400 text-xs md:text-sm truncate hover:text-white cursor-pointer ease-in-out duration-300">
             {getArtistInfo()}
+            {/* currentSong?.idArtist[0]?.name */}
           </span>
         </div>
       </div>

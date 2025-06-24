@@ -28,6 +28,7 @@ function Home() {
     setArtist(artist);
   };
 
+
   const handleSectionProfile = () => {
     setSection("profile");
   };
