@@ -32,7 +32,7 @@ function NavBar() {
     } else if(section === "SearchSection") {
       setSection("home"); //EN VEZ DE HOME DEBO PONER UNA SECCION DE BROWSE
     }
-  }, [useSearch]); // El efecto se ejecuta cuando useNav cambia
+  }, [useSearch, section, setSection]); // El efecto se ejecuta cuando useNav cambia
 
   return (
     <nav className="flex justify-center items-center text-white lg:p-4 pb-14 bg-[#000] rounded-b-xl  ">

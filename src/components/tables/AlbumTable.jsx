@@ -10,6 +10,10 @@ import {
 
 import {
   useRowSelect,
+  HeaderCellSelect,
+  CellSelect,
+  SelectClickTypes,
+  SelectTypes,
 } from "@table-library/react-table-library/select";
 import useSongStore from "../../store/useSongStore"
 import usePlayingPlaylistStore from "../../store/usePlayingPlaylistStore";
@@ -54,7 +58,7 @@ function AlbumTable() {
   const setUsePlayingMusic = usePlayingPlaylistStore((state) => state.setPlayingPlaylist);
   
   const [tableData, setTableData] = useState({ nodes: [] });
-  const [setSongs] = useState([]);
+  const [_, setSongs] = useState([]);
   const setCurrentSong = useSongStore((state) => state.setCurrentSong);
   
   // Estado para mantener control sobre la fila seleccionada
